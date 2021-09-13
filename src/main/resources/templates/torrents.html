@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="'Hello, ' + ${name} + '!'"></title>
+    <link href="/css/main.css" rel="stylesheet">
+    <style>
+        table,
+        td {
+            border: 1px solid #333;
+        }
+
+        thead,
+        tfoot {
+            background-color: #333;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+<table>
+    <thead>
+        <tr>
+            <th>Filename</th>
+            <th>URLs</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr th:each="torrent: ${torrents}">
+            <td th:text="${torrent.filename}"></td>
+            <td>
+                <a th:each="link: ${torrent.links}" href="${link}">link</a>
+            </td>
+        </tr>
+    </tbody>
+</table>
+</body>
+</html>
