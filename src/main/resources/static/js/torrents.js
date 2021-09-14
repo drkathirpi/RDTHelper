@@ -104,6 +104,7 @@ function uploadFile(){
     var files = $("#torrentFile")[0].files;
     for (var i = 0; i < files.length; i++){
         form.append("file", files[i], files[i].name);
+
     }
 
     var settings = {
