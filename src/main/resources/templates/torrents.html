@@ -2,37 +2,55 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title th:text="'Hello, ' + ${name} + '!'"></title>
-    <link href="/css/main.css" rel="stylesheet">
-    <style>
-        table,
-        td {
-            border: 1px solid #333;
-        }
+    <script th:src="@{https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js}"></script>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/torrents.css}"/>
+    <!-- jQuery Modal -->
+    <script th:src="@{https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.js}"></script>
+    <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css}"/>
 
-        thead,
-        tfoot {
-            background-color: #333;
-            color: #fff;
-        }
-    </style>
+    <title th:text="'Hello, !'"></title>
+
+
 </head>
 <body>
-<table>
+
+<div class="topnav">
+    <a class="active" th:href="@{/torrents}">Home</a>
+    <a href="#settings">Settings</a>
+</div>
+
+<!-- The Modal -->
+<div th:id="myModal" class="modal">
+
+    <!-- Modal content -->
+    <div th:id="modalContent" class="modal-content">
+        <span th:id="closeModalSpan" rel="modal:close">&times;</span>
+
+    </div>
+
+</div>
+
+
+<div>
+    <label for="torrentFile">Update file</label>
+    <input type="file" id="torrentFile" accept=".torrent" multiple/>
+    <input onclick="uploadFile()" type="button" value="Convert"/>
+</div>
+<table id="tableTorrent" style="width:100%;">
     <thead>
         <tr>
-            <th>Filename</th>
-            <th>URLs</th>
+            <td width="60%" class="tdtop"><strong>Filename</strong></td>
+            <td width="10%" class="tdtop">Status</td>
+            <td width="6%" class="tdtop">Seeders</td>
+            <td width="9%" class="tdtop">Speed</td>
+            <td></td>
         </tr>
     </thead>
-    <tbody>
-        <tr th:each="torrent: ${torrents}">
-            <td th:text="${torrent.filename}"></td>
-            <td>
-                <a th:each="link: ${torrent.links}" href="${link}">link</a>
-            </td>
-        </tr>
+    <tbody id="tbodyTorrent" class="section section-step">
+
     </tbody>
 </table>
 </body>
+
+<script type="text/javascript" th:src="@{/js/torrents.js}"></script>
 </html>
