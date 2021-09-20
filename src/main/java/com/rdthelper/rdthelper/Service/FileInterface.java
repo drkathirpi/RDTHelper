@@ -7,7 +7,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.stream.Stream;
 
-public interface FileService {
+public interface FileInterface {
 
     public void init();
     public File save(MultipartFile file);

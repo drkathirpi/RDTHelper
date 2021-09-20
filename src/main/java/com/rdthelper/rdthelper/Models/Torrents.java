@@ -15,7 +15,7 @@ public class Torrents {
     private String host;
     private Integer split;
     private Integer progress;
-    private String downloaded;
+    private String status;
     private String added;
     private RDTFile[] files;
     private String[] links;
@@ -23,5 +23,5 @@ public class Torrents {
     private Integer speed;
     private Integer seeders;
 
-    Torrents(){}
+    public Torrents(){}
 }

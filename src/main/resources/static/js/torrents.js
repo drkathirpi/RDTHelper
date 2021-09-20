@@ -1,42 +1,20 @@
-// Get the modal
-var modal = document.getElementById("myModal");
-console.log(modal)
-// Get the button that opens the modal
-var btn = document.getElementById("myBtn");
 
-// Get the <span> element that closes the modal
-var span = document.getElementsByClassName("close")[0];
 
-// When the user clicks on <span> (x), close the modal
-//span.onclick = function() {
-//    modal.style.display = "none";
-//}
-
-$("#closeModalSpan").onclick = function (){
-    modal.style.display = "none";
-}
-
-// When the user clicks anywhere outside of the modal, close it
-window.onclick = function(event) {
-    if (event.target === modal) {
-        modal.style.display = "none";
-    }
-}
 
 $(window).on('load', function () {
     updateInterface();
+    changeTableView();
 });
-
 
 function bytesHumanReadable(bytes){
 
     if (!bytes){
-        return 'N/A';
+        return '0 o/s';
     }
     const mega = 1024;
 
     if (Math.abs(bytes) < mega) {
-        return `${bytes}B/s`;
+        return `${bytes}o/s`;
     }
 
     const units = ['Ko', 'Mo', 'To'];
@@ -50,64 +28,143 @@ function bytesHumanReadable(bytes){
     return `${bytes.toFixed(1)} ${units[u]}/s`;
 }
 
+$(window).resize((selector) => {
+    changeTableView();
+});
+
+function changeTableView(){
+    // if (window.innerWidth > 600) return false;
+    const tableEl = document.querySelector("table");
+    const thEls = tableEl.querySelectorAll('thead th');
+    const tdLabels = Array.from(thEls).map(el => el.innerText);
+    tableEl.querySelectorAll('tbody tr').forEach( tr => {
+    Array.from(tr.children).forEach(
+        (td, ndx) =>  {
+            td.setAttribute('label', tdLabels[ndx]);
+        }
+    );
+    });
+}
+
+function makeRequest(settings, callback){
+    $.ajax(settings).done(callback).fail((jqXHR, textStatus, errorThrown) => {
+    console.log(jqXHR)
+        $("#error_connection").text(`Error: ${jqXHR.responseJSON.error}`);
+    });
+}
+
+function deleteTorrents(){
+    let allCheckBox = $(".torrentCheckbox:checkbox:checked");
+    for (let i = 0; i < allCheckBox.length; i++){
+        let settings = {
+            "url": `/api/torrents/${$(allCheckBox[i]).attr('name')}`,
+            "method": "DELETE",
+            "timeout": 0,
+        };
+
+        makeRequest(settings, (response) => {
+            $(allCheckBox[i]).parents("tr").remove();
+        });
+
+    }
+}
+
 function updateInterface(){
     var settings = {
-        "url": "/api/torrents",
+        "url": "http://localhost:8080/api/torrents",
         "method": "GET",
         "timeout": 0,
     };
 
-    $.ajax(settings).done(function (response) {
-        $("#tbodyTorrent tr").remove();
+    makeRequest(settings, (response) => {
         var torrents = response;
-        for (var i = 0; i < torrents.length; i ++){
+        if ($("#tbodyTorrent tr").length === 0 || $(`#filename_${torrents[0].id}`).length === 0 ){
+            $("#tbodyTorrent tr").remove();
+            for (var i = 0; i < torrents.length; i ++){
 
-            var torrent = torrents[i];
-            var status = torrent.progress || 100;
-            var seeders = torrent.seeders || 0;
-            var speed = bytesHumanReadable(torrent.speed) || 0;
-            $("#tableTorrent").append(`<tr>
-                    <td>${torrent.filename}</td>
-                    <td>${status}%</td>
-                    <td th:text="">${seeders}</td>
-                    <td th:text="">${speed}</td>
-                    <td>
-                        <img src="/img/direct-download.png" alt="download"/>
-                    </td>               
-                </tr>`);
+                var torrent = torrents[i];
+                var progress = torrent.progress || 100;
+                var seeders = torrent.seeders || 0;
+                var speed = bytesHumanReadable(torrent.speed) || 0;
+                console.log(torrent.status);
+
+                    $("#tableTorrent").append(`<tr>
+                                        <td id="filename_${torrent.id}"><a class="filenameTorrent" href="http://localhost:8080/info/${torrent.id}">${torrent.filename}</a></td>
+                                        <td><img src=""/><img id="status_${torrent.id}" src="/img/${torrent.status}.png"/><span  id="progress_${torrent.id}">${progress}%</span></td>
+                                        <td id="seeders_${torrent.id}" th:text="">${seeders}</td>
+                                        <td id="speed_${torrent.id}" th:text="">${speed}</td>
+                                        <td>
+                                        <label for="download"><input style="margin-left: 85px;" name="${torrent.id}" class="torrentCheckbox" type="checkbox" name="${torrent.id}"/></label>
+                                        </td>
+                                    </tr>`);
+            }
+        }else {
+
+            for (let i = 0; i < torrents.length; i++) {
+                let torrent = torrents[i];
+                let progress = $(`#progress_${torrent.id}`);
+                let speed = $(`#speed_${torrent.id}`);
+                let seeders = $(`#seeders_${torrent.id}`);
+                let status = $(`#status_${torrent.id}`);
+
+                status.attr("src", `/img/${torrent.status}.png`);
+                progress.text(`${torrent.progress}%`);
+                speed.text(bytesHumanReadable(torrent.speed) || 0);
+                seeders.text(torrent.seeders || 0);
+            }
+
         }
+    });
 
-    })
+    
 }
+
 
 setInterval (function () {
     updateInterface()
 }, 2*1000);
 
+function showLinks(links){
+    console.log(links)
+}
+
+function showInfo(id){
+    showModal();
+}
 
 function acceptAllFile(id){
     let settings = {
-        'url': `/api/torrents/accept/${id}`,
+        'url': `http://localhost:8080/api/torrents/accept/${id}`,
         'method': "GET",
         'timeout': 0,
         'processData': false
     }
 
     $.ajax(settings).done(result => {
-        modal.style.display = "none";
-        $("#torrentFile").val("");
+        $("#error_connection").text("Torrent added");
     });
 }
 
+function showModal(){
+    this.blur();
+    $.get(this.href, function(html){
+        $(html).appendTo('body').modal();
+    });
+}
+
+function closeModal(){
+    modal.style.display = "none";
+}
+
 function uploadFile(){
-    var form = new FormData();
-    var files = $("#torrentFile")[0].files;
+    let form = new FormData();
+    let files = $("#torrentFile")[0].files;
     for (var i = 0; i < files.length; i++){
         form.append("file", files[i], files[i].name);
     }
 
     var settings = {
-        "url": "/api/torrent/upload",
+        "url": "http://localhost:8080/api/torrent/upload",
         "method": "POST",
         "timeout": 0,
         "processData": false,
@@ -121,7 +178,7 @@ function uploadFile(){
         for (let i = 0; i < json.length; i++){
 
             let settingsInfo = {
-                "url": `/api/torrents/${json[i]['id']}`,
+                "url": `http://localhost:8080/api/torrents/${json[i]['id']}`,
                 "method": "GET",
                 "timeout": 0,
             }
@@ -135,10 +192,6 @@ function uploadFile(){
                 $("#addingText").remove();
 
             });
-
-
-
         }
-
     });
 }

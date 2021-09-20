@@ -1,19 +1,69 @@
-* { box-sizing:border-box }
+
+body {
+overflow: scroll;
+}
+
+html,body {
+    background-color:#FFFFFF;
+    width:100%;
+    height:100%;
+}
 
 .topnav {
-    position: absolute;
+    position: fixed;
+    z-index: 1;
     top: 0;
     left: 0;
-    margin-bottom: 100px;
     width:100%;
     min-width: 650px;
     background-color: #333;
     overflow: hidden;
 }
 
+@media screen and (max-width: 600px) {
+    table thead {
+      display: none;
+    }
+    table td {
+      display: flex;
+    }
+
+    table td::before {
+      content: attr(label);
+      font-weight: bold;
+      width: 120px;
+      min-width: 120px;
+    }
+  }
+
+#container {
+    border-radius: 10px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 20px;
+    text-align: center;
+    line-height: 50px;
+    background-color: white;
+    height: 100px;
+    width: 500px;
+    position: relative;
+    margin-top: 150px;
+    box-shadow: 8px 8px 12px #aaa;
+}
+
+tr {
+    height: 20px;
+}
+
+tbody tr:nth-child(odd){
+  background-color: grey;
+  color: #fff;
+}
+
+
+
 .section-step {
-    border-radius: 0.25em; // 1
-box-shadow: 0 0 0 1px #ccc; // 1
+    box-shadow: 0 0 0 1px #ccc;
 }
 
 .section::before {
@@ -26,28 +76,32 @@ box-shadow: 0 0 0 1px #ccc; // 1
     border-top: 1em solid transparent;
 }
 
-body { padding-top: 150px; }
 
 table {
-    border-collapse: collapse; // 1
+    border-collapse: collapse;
+    border-radius: 1em;
+    overflow: hidden;
+    margin-left: auto;
+    margin-right: auto;
+    position:relative;
     border-spacing: 0;
 }
 
-table, td {
-    margin-right: 50%;
-}
 
-td {
-    border-bottom: 1px solid #3d3434;
-}
+
 
 thead, tfoot {
     background-color: #333;
     color: #fff;
 }
 
+.filenameTorrent {
+    color: black;
+    text-decoration: none;
+}
 
-.topnav, a {
+
+.topnav, .navlink {
     float: left;
     color: #f2f2f2;
     text-align: center;
@@ -56,49 +110,14 @@ thead, tfoot {
     font-size: 17px;
 }
 
-.topnav, a:hover {
+.topnav, .navlink:hover {
     background-color: #3d3434;
     color: white;
 }
 
 
-.topnav, a.active {
+.topnav, .navlink.active {
     background-color: #3d3434;
     color: white;
 }
 
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1;
-    padding-top: 100px;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgb(0,0,0);
-    background-color: rgba(0,0,0,0.4);
-}
-
-.modal-content {
-    background-color: #fefefe;
-    margin: auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
-}
-
-.close {
-    color: #aaaaaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-}
-
-.close:hover,
-.close:focus {
-    color: #000;
-    text-decoration: none;
-    cursor: pointer;
-}

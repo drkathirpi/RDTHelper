@@ -16,7 +16,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.stream.Stream;
 
 @Service
-public class UploadService implements FileService{
+public class UploadInterface implements FileInterface {
 
     private final Path root = Paths.get("uploads");
 
