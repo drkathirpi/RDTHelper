@@ -7,6 +7,7 @@ import lombok.Data;
 public class ApiError {
     private Integer error_code;
     private String error;
+    private final String link =  "Please visit for help https://api.real-debrid.com/#api_error_codes";
 
     public ApiError() {}
 

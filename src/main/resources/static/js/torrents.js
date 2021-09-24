@@ -89,12 +89,12 @@ function updateInterface(){
                 console.log(torrent.status);
 
                     $("#tableTorrent").append(`<tr>
-                                        <td id="filename_${torrent.id}"><a class="filenameTorrent" href="http://localhost:8080/info/${torrent.id}">${torrent.filename}</a></td>
+                                        <td scope="row" id="filename_${torrent.id}"><p class="filenameTorrent">${torrent.filename}</p></td>
                                         <td><img src=""/><img id="status_${torrent.id}" src="/img/${torrent.status}.png"/><span  id="progress_${torrent.id}">${progress}%</span></td>
                                         <td id="seeders_${torrent.id}" th:text="">${seeders}</td>
                                         <td id="speed_${torrent.id}" th:text="">${speed}</td>
                                         <td>
-                                        <label for="download"><input style="margin-left: 85px;" name="${torrent.id}" class="torrentCheckbox" type="checkbox" name="${torrent.id}"/></label>
+                                        <label for="download"><input name="${torrent.id}" class="torrentCheckbox" type="checkbox" name="${torrent.id}"/></label>
                                         </td>
                                     </tr>`);
             }
