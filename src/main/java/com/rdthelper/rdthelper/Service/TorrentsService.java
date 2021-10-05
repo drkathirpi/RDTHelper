@@ -1,36 +1,39 @@
 package com.rdthelper.rdthelper.Service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.rdthelper.rdthelper.Exception.RDTResponseError;
 import com.rdthelper.rdthelper.Models.*;
+import com.rdthelper.rdthelper.Repositories.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.*;
-import org.springframework.http.client.MultipartBodyBuilder;
-import org.springframework.stereotype.Repository;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
-import static javafx.scene.input.KeyCode.H;
+
 
 @Service
 public class TorrentsService {
 
+    @Autowired
+    private UserRepository userRepository;
+
     private final String BASE_URL = "https://api.real-debrid.com/rest/1.0";
     private RestTemplate restTemplate;
+
+    private String rdtToken;
+
+    public String initRdtToken(){
+        String authentication = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByUsername(authentication);
+        return user.getRdtToken();
+    }
 
     @Bean
     public void initRestTemplate(){
@@ -38,8 +41,11 @@ public class TorrentsService {
     }
 
     private HttpHeaders initHeader(){
+        if (rdtToken == null){
+            rdtToken = initRdtToken();
+        }
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setBearerAuth(System.getenv("RDT_TOKEN"));
+        httpHeaders.setBearerAuth(rdtToken);
         return httpHeaders;
     }
 

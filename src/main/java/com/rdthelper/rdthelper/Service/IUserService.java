@@ -7,5 +7,6 @@ import java.util.List;
 public interface IUserService {
 
     List<User> findAll();
+    User findByUsername(String s);
     User save(User s);
 }

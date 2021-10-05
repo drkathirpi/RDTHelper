@@ -87,10 +87,10 @@ function updateInterface(){
                 var seeders = torrent.seeders || 0;
                 var speed = bytesHumanReadable(torrent.speed) || 0;
                 console.log(torrent.status);
-
+                    let imgUri = encodeURI(`/img/${torrent.status}.png`);
                     $("#tableTorrent").append(`<tr>
                                         <td scope="row" id="filename_${torrent.id}"><p class="filenameTorrent">${torrent.filename}</p></td>
-                                        <td><img src=""/><img id="status_${torrent.id}" src="/img/${torrent.status}.png"/><span  id="progress_${torrent.id}">${progress}%</span></td>
+                                        <td><img src=""/><img width="24px" height="24px" id="status_${torrent.id}" src="${imgUri}" alt="${torrent.status}"/><span  id="progress_${torrent.id}">${progress}%</span></td>
                                         <td id="seeders_${torrent.id}" th:text="">${seeders}</td>
                                         <td id="speed_${torrent.id}" th:text="">${speed}</td>
                                         <td>
@@ -140,8 +140,8 @@ function acceptAllFile(id){
         'processData': false
     }
 
-    $.ajax(settings).done(result => {
-        $("#error_connection").text("Torrent added");
+    makeRequest(settings, (result) => {
+        console.log(result);
     });
 }
 
@@ -182,15 +182,10 @@ function uploadFile(){
                 "method": "GET",
                 "timeout": 0,
             }
-            $.ajax(settingsInfo).done(function (result){
-                console.log(result);
-                modal.style.display = "block";
-                $("#modalContent").append(`
-                    <p id="addingText">Adding ${result.filename} in progress...</p>
-                    `);
-                acceptAllFile(result.id);
-                $("#addingText").remove();
 
+            makeRequest(settingsInfo, (r) => {
+                acceptAllFile(r.id);
+                $("#addingText").remove();
             });
         }
     });
