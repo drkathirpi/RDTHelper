@@ -25,6 +25,13 @@
                     <a class="nav-link" th:href="@{/torrents}">Torrents</a>
                     <a class="nav-link disabled" id="error_connection" style="color:red"></a>
                 </div>
+                <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/logout}">Logout</a>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
     </nav>
@@ -38,6 +45,5 @@
     <button onclick="resetDebrid()" type="button" class="btn btn-light">Reset</button>
 
     </body>
-
 <script type="text/javascript" src="/js/home.js"></script>
 </html>

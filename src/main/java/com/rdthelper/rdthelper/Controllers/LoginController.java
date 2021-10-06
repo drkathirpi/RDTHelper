@@ -3,16 +3,19 @@ package com.rdthelper.rdthelper.Controllers;
 import com.rdthelper.rdthelper.Models.User;
 import com.rdthelper.rdthelper.Repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.sql.DataSource;
-import java.util.List;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @Controller
 public class LoginController {
@@ -21,15 +24,17 @@ public class LoginController {
     @Autowired
     private UserRepository userRepository;
 
-    @GetMapping("/signin")
-    public String signin(Model model){
+
+    @GetMapping("/signup")
+    public String signup(Model model){
         User user = new User();
         model.addAttribute("user", user);
-        return  "signin";
+        return "signup";
     }
 
-    @PostMapping("/perform_signin")
-    public String persormSignin(@ModelAttribute User user, Model model){
+    @PostMapping("/perform_signup")
+    public String performSignup(@ModelAttribute User user, Model model){
+        System.out.println(user);
         userRepository.save(user);
         return "redirect:/login";
     }
@@ -38,12 +43,19 @@ public class LoginController {
     public String Login(){
         Long nbrUser = userRepository.count();
         if (nbrUser.equals(0L)){
-            return "redirect:/signin";
+            return "redirect:/signup";
         }
 
-        List<User> users = userRepository.findAll();
-        System.out.println(users);
         return "login";
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request, HttpServletResponse response){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null){
+            new SecurityContextLogoutHandler().logout(request, response, auth);
+        }
+        return "redirect:/login?logout";
     }
 
 }

@@ -1,10 +1,16 @@
 
 
+const tokenError = function (error){
+    return `
+
+`
+}
 
 $(window).on('load', function () {
     updateInterface();
     changeTableView();
 });
+
 
 function bytesHumanReadable(bytes){
 
@@ -32,24 +38,37 @@ $(window).resize((selector) => {
     changeTableView();
 });
 
-function changeTableView(){
+function changeTableView() {
     // if (window.innerWidth > 600) return false;
     const tableEl = document.querySelector("table");
     const thEls = tableEl.querySelectorAll('thead th');
     const tdLabels = Array.from(thEls).map(el => el.innerText);
-    tableEl.querySelectorAll('tbody tr').forEach( tr => {
-    Array.from(tr.children).forEach(
-        (td, ndx) =>  {
-            td.setAttribute('label', tdLabels[ndx]);
-        }
-    );
+    tableEl.querySelectorAll('tbody tr').forEach(tr => {
+        Array.from(tr.children).forEach(
+            (td, ndx) => {
+                td.setAttribute('label', tdLabels[ndx]);
+            }
+        );
     });
 }
+
+let toastTrigger = document.getElementById('liveToastBtn')
+    let toastLiveExample = document.getElementById('liveToast')
 
 function makeRequest(settings, callback){
     $.ajax(settings).done(callback).fail((jqXHR, textStatus, errorThrown) => {
     console.log(jqXHR)
-        $("#error_connection").text(`Error: ${jqXHR.responseJSON.error}`);
+        let t = $("#toast-body");
+        if ($(t).children().length === 0){
+            let obj = jqXHR.responseText;
+            let json = JSON.parse(obj);
+            $(t).append(`<p>${json.error_code} : ${json.error}</p>`);
+            let toast = new bootstrap.Toast(toastLiveExample)
+
+            toast.show()
+        }
+
+
     });
 }
 
@@ -76,7 +95,10 @@ function updateInterface(){
         "timeout": 0,
     };
 
-    makeRequest(settings, (response) => {
+    makeRequest(settings, (response, status, jqXHR) => {
+        if (jqXHR.getResponseHeader('content-type').indexOf('text/html') >= 0){
+            document.location.href = "/login";
+        }
         var torrents = response;
         if ($("#tbodyTorrent tr").length === 0 || $(`#filename_${torrents[0].id}`).length === 0 ){
             $("#tbodyTorrent tr").remove();
@@ -99,7 +121,6 @@ function updateInterface(){
                                     </tr>`);
             }
         }else {
-
             for (let i = 0; i < torrents.length; i++) {
                 let torrent = torrents[i];
                 let progress = $(`#progress_${torrent.id}`);
@@ -159,7 +180,7 @@ function closeModal(){
 function uploadFile(){
     let form = new FormData();
     let files = $("#torrentFile")[0].files;
-    for (var i = 0; i < files.length; i++){
+    for (let i = 0; i < files.length; i++){
         form.append("file", files[i], files[i].name);
     }
 

@@ -1,4 +1,4 @@
-<html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
@@ -82,35 +82,33 @@
     </style>
 </head>
 <body>
-<div class="sidenav">
-    <div class="login-main-text">
-        <h2>RDT Manager</h2>
-        <p>Login</p>
-    </div>
-</div>
 <div class="main">
-    <div class="col-md-6 col-sm-12">
-        <div class="login-form">
-            <div th:if="${param.logout}">
-                You have been logged out.
-            </div>
-            <form th:action="@{/login}" method='POST'>
-                <div class="form-group">
-                    <label>User Name</label>
-                    <input type="text" class="form-control" name="username" placeholder="User Name">
-                </div>
-                <div class="form-group">
-                    <label>Password</label>
-                    <input  type="password" name="password" class="form-control" placeholder="Password">
-                </div>
-                <div th:if="${param.error}">
-                    Invalid username and password.
-                </div>
-                <button type="submit" class="btn btn-black">Login</button>
-            </form>
-
+    <div class="sidenav">
+        <div class="login-main-text">
+            <h2>RDT Manager</h2>
+            <p>Signup</p>
         </div>
     </div>
+<div class="col-md-6 col-sm-12">
+    <div class="login-form">
+        <form th:action="@{/perform_signup}" action="#" th:object="${user}" method='POST'>
+            <div class="form-group">
+                <label>User Name</label>
+                <input th:field="*{username}" type='text' name='username'  class="form-control" placeholder="User Name">
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input  type="password" autocomplete="off" th:field="*{password}" class="form-control" placeholder="Password">
+            </div>
+            <div class="form-group">
+                <label>Real-Debrid Token</label>
+                <input  th:field="*{rdtToken}" type='text' name='rdt_token' class="form-control" placeholder="Real-Debrid Token">
+            </div>
+            <button type="submit" class="btn btn-black">Login</button>
+        </form>
+
+    </div>
+</div>
 </div>
 </body>
 </html>
