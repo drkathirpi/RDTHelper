@@ -1,11 +1,10 @@
 package com.rdthelper.rdthelper.Service;
 
 import com.rdthelper.rdthelper.Models.User;
-import com.rdthelper.rdthelper.Repositories.SettingsRepository;
 import com.rdthelper.rdthelper.Repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -15,8 +14,7 @@ public class UserService implements IUserService{
 
     @Autowired
     private UserRepository userRepository;
-    @Autowired
-    private SettingsRepository settingsRepository;
+
 
     @Override
     public List<User> findAll() {
@@ -31,5 +29,11 @@ public class UserService implements IUserService{
     @Override
     public User save(User s) {
         return userRepository.save(s);
+    }
+
+    @Transactional
+    @Override
+    public void update(User s) {
+        userRepository.update(s.getUsername(), s.getPassword(), s.getRdtToken());
     }
 }

@@ -6,7 +6,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.persistence.*;
 
-@Entity
+@Entity(name = "User")
 public class User {
 
     @Id

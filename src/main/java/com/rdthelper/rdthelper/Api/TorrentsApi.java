@@ -28,98 +28,31 @@ public class TorrentsApi {
 
     @GetMapping("/torrents")
     public ResponseEntity<?> getAll(){
-        try {
-            return torrentsService.getAll();
-        }catch (HttpClientErrorException e){
-            try{
-                ObjectMapper mapper = new ObjectMapper();
-                return new ResponseEntity<>(mapper.readValue(e.getResponseBodyAsString(), ApiError.class), HttpStatus.BAD_REQUEST);
-            }catch (JsonProcessingException jsonException) {
-                return new ResponseEntity<>(new ApiError(200, jsonException.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-        }
-
+        return torrentsService.getAll();
     }
 
     @GetMapping("/torrents/{id}")
     public ResponseEntity<?> getOne(@PathVariable(value = "id") String id){
-        try{
-            return torrentsService.getOne(id);
-        }catch (HttpServerErrorException e){
-            try{
-                ObjectMapper mapper = new ObjectMapper();
-                return new ResponseEntity<>(mapper.readValue(e.getResponseBodyAsString(), ApiError.class), HttpStatus.BAD_REQUEST);
-            }catch (JsonProcessingException jsonException) {
-                return new ResponseEntity<>(new ApiError(200, jsonException.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-        }
+        return torrentsService.getOne(id);
     }
 
     @DeleteMapping("/torrents/{id}")
     public ResponseEntity<?> deleteOne(@PathVariable(value = "id") String id){
-            try {
-                return torrentsService.deleteOne(id);
-            }catch (HttpServerErrorException e){
-            try{
-                ObjectMapper mapper = new ObjectMapper();
-                return new ResponseEntity<>(mapper.readValue(e.getResponseBodyAsString(), ApiError.class), HttpStatus.BAD_REQUEST);
-            }catch (JsonProcessingException jsonException) {
-                return new ResponseEntity<>(new ApiError(200, jsonException.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-        }
+        return torrentsService.deleteOne(id);
     }
 
     @GetMapping("/torrents/accept/{id}")
     public ResponseEntity<?> startTorrent(@PathVariable(value = "id") String id){
-        try{
-            return torrentsService.startTorrent(id);
-        }catch (HttpServerErrorException e){
-            try{
-                ObjectMapper mapper = new ObjectMapper();
-                return new ResponseEntity<>(mapper.readValue(e.getResponseBodyAsString(), ApiError.class), HttpStatus.BAD_REQUEST);
-            }catch (JsonProcessingException jsonException) {
-                return new ResponseEntity<>(new ApiError(200, jsonException.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-        }
+        return torrentsService.startTorrent(id);
     }
 
     @PostMapping("/torrent/upload")
     public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile... files){
-        List<RDTUpload> rdtFiles = new ArrayList<>();
-        try {
-            for (MultipartFile file : files){
-                rdtFiles.add(torrentsService.addTorrent(file).getBody());
-            }
-
-            return new ResponseEntity<>(rdtFiles, HttpStatus.OK);
-        }catch (HttpServerErrorException e){
-            try {
-                ObjectMapper mapper = new ObjectMapper();
-                return new ResponseEntity<>(mapper.readValue(e.getResponseBodyAsString(), ApiError.class), HttpStatus.BAD_REQUEST);
-            } catch (JsonProcessingException jsonException) {
-                return new ResponseEntity<>(new ApiError(200, jsonException.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-        }catch (IOException e){
-            return new ResponseEntity<>(new ApiError(1, "Cannot read file"), HttpStatus.BAD_REQUEST);
-        }
+        return torrentsService.addTorrent(files);
     }
 
     @PostMapping("/torrents/debrid")
     public ResponseEntity<?> debridLink(@RequestBody LinkRequest link){
-
-        if (link.getLink() == null || link.getLink().isEmpty()){
-            return new ResponseEntity<>(new ApiError(-1, "Link is missing"), HttpStatus.BAD_REQUEST);
-        }
-
-        try {
-            return torrentsService.debridLink(link);
-        }catch (HttpServerErrorException e){
-            try{
-                ObjectMapper mapper = new ObjectMapper();
-                return new ResponseEntity<>(mapper.readValue(e.getResponseBodyAsString(), ApiError.class), HttpStatus.BAD_REQUEST);
-            }catch (JsonProcessingException jsonException) {
-                return new ResponseEntity<>(new ApiError(200, jsonException.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-        }
+        return torrentsService.debridLink(link);
     }
 }

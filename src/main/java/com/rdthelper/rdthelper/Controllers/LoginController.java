@@ -25,8 +25,16 @@ public class LoginController {
     private UserRepository userRepository;
 
 
+    private Boolean hasUser(){
+        Long nbrUser = userRepository.count();
+        return !nbrUser.equals(0L);
+    }
+
+
     @GetMapping("/signup")
     public String signup(Model model){
+        if (hasUser()) return "redirect:/login";
+
         User user = new User();
         model.addAttribute("user", user);
         return "signup";
@@ -41,10 +49,8 @@ public class LoginController {
 
     @GetMapping("/login")
     public String Login(){
-        Long nbrUser = userRepository.count();
-        if (nbrUser.equals(0L)){
+        if (!hasUser())
             return "redirect:/signup";
-        }
 
         return "login";
     }

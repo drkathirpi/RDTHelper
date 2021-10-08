@@ -9,4 +9,5 @@ public interface IUserService {
     List<User> findAll();
     User findByUsername(String s);
     User save(User s);
+    void update(User s);
 }
