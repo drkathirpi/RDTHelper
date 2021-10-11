@@ -1,11 +1,5 @@
 
 
-const tokenError = function (error){
-    return `
-
-`
-}
-
 $(window).on('load', function () {
     updateInterface();
     changeTableView();
@@ -56,7 +50,9 @@ let toastTrigger = document.getElementById('liveToastBtn')
     let toastLiveExample = document.getElementById('liveToast')
 
 function makeRequest(settings, callback){
+    console.log("oucou");
     $.ajax(settings).done(callback).fail((jqXHR, textStatus, errorThrown) => {
+    console.log("foufou");
     console.log(jqXHR)
         let t = $("#toast-body");
         if ($(t).children().length === 0){
@@ -94,8 +90,9 @@ function updateInterface(){
         "method": "GET",
         "timeout": 0,
     };
-
+    console.log("coucou0")
     makeRequest(settings, (response, status, jqXHR) => {
+    console.log("coucou")
         if (jqXHR.getResponseHeader('content-type').indexOf('text/html') >= 0){
             document.location.href = "/login";
         }
@@ -116,7 +113,7 @@ function updateInterface(){
                                         <td id="seeders_${torrent.id}" th:text="">${seeders}</td>
                                         <td id="speed_${torrent.id}" th:text="">${speed}</td>
                                         <td>
-                                        <label for="download"><input name="${torrent.id}" class="torrentCheckbox" type="checkbox" name="${torrent.id}"/></label>
+                                        <label for="download"><input class="torrentCheckbox" type="checkbox" value="${torrent.id}" name="ids"/></label>
                                         </td>
                                     </tr>`);
             }

@@ -2,6 +2,7 @@ package com.rdthelper.rdthelper.Api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.rdthelper.rdthelper.Exception.LinkMissingRequest;
 import com.rdthelper.rdthelper.Models.ApiError;
 import com.rdthelper.rdthelper.Models.LinkRequest;
 import com.rdthelper.rdthelper.Models.RDTUpload;
@@ -47,12 +48,12 @@ public class TorrentsApi {
     }
 
     @PostMapping("/torrent/upload")
-    public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile... files){
+    public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile... files) throws IOException {
         return torrentsService.addTorrent(files);
     }
 
     @PostMapping("/torrents/debrid")
-    public ResponseEntity<?> debridLink(@RequestBody LinkRequest link){
+    public ResponseEntity<?> debridLink(@RequestBody LinkRequest link) throws LinkMissingRequest {
         return torrentsService.debridLink(link);
     }
 }

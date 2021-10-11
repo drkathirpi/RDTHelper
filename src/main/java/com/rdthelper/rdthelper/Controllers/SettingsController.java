@@ -29,7 +29,7 @@ public class SettingsController {
 
     @PostMapping("/perform_settings")
     public String performSettings(@ModelAttribute User user, Model model){
-        userRepository.update(user);
+        userRepository.save(user);
         return "settings";
     }
 

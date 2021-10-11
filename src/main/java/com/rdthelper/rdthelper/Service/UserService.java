@@ -26,14 +26,18 @@ public class UserService implements IUserService{
         return userRepository.findByUsername(s);
     }
 
+    @Transactional
     @Override
     public User save(User s) {
+        Long nbrUSer = userRepository.count();
+        if (!nbrUSer.equals(0L)){
+            User user = userRepository.findByUsername(s.getUsername());
+            if (user != null){
+                s.setId(user.getId());
+            }
+        }
         return userRepository.save(s);
     }
 
-    @Transactional
-    @Override
-    public void update(User s) {
-        userRepository.update(s.getUsername(), s.getPassword(), s.getRdtToken());
-    }
+
 }

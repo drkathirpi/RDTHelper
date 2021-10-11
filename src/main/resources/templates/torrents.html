@@ -67,19 +67,22 @@
     </div>
 
 
-    <table class="table w-75 table-dark table-sm mx-auto w-auto" id="tableTorrent">
-        <thead>
-        <tr>
-            <th scope="col" width="60%" class="tdtop"><strong>Filename</strong></th>
-            <th scope="col" width="10%" class="tdtop">Status</th>
-            <th scope="col" width="6%" class="tdtop">Seeders</th>
-            <th scope="col" width="9%" class="tdtop">Speed</th>
-            <th scope="col"><img onclick="deleteTorrents()"  style="width: 24px; height: 24px; cursor: pointer;" src="/img/delete.png"/></th>
-        </tr>
-        </thead>
-        <tbody id="tbodyTorrent" class="section section-step">
-        </tbody>
-    </table>
+    <form action="#" th:action="@{/}" th:method="POST">
+        <table class="table w-75 table-dark table-sm mx-auto w-auto" id="tableTorrent">
+            <thead>
+            <tr>
+                <th scope="col" width="60%" class="tdtop"><strong>Filename</strong></th>
+                <th scope="col" width="10%" class="tdtop">Status</th>
+                <th scope="col" width="6%" class="tdtop">Seeders</th>
+                <th scope="col" width="9%" class="tdtop">Speed</th>
+                <th scope="col"><img onclick="deleteTorrents()"  style="width: 24px; height: 24px; cursor: pointer;" src="/img/delete.png"/></th>
+                <th><input type="submit" value="Download"/></th>
+            </tr>
+            </thead>
+            <tbody id="tbodyTorrent" class="section section-step">
+            </tbody>
+        </table>
+    </form>
 
     </body>
     <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
@@ -87,12 +90,13 @@
             <div class="toast-header">
                 <strong class="me-auto">Error</strong>
                 <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+
             </div>
             <div class="toast-body" id="toast-body">
 
             </div>
         </div>
     </div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-kQtW33rZJAHjgefvhyyzcGF3C5TFyBQBA13V1RKPf4uH+bwyzQxZ6CmMZHmNBEfJ" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-kQtW33rZJAHjgefvhyyzcGF3C5TFyBQBA13V1RKPf4uH+bwyzQxZ6CmMZHmNBEfJ" crossorigin="anonymous"></script>
     <script type="text/javascript" src="/js/torrents.js"></script>
 </html>
