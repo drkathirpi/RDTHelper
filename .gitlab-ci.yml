@@ -1,0 +1,10 @@
+stages:
+  - test
+
+test-all:
+  stage: test
+
+  image:
+    name: maven:3.8.3-jdk-8
+  script:
+    - mvn clean verify

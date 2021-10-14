@@ -58,7 +58,7 @@ function makeRequest(settings, callback){
         if ($(t).children().length === 0){
             let obj = jqXHR.responseText;
             let json = JSON.parse(obj);
-            $(t).append(`<p>${json.error_code} : ${json.error}</p>`);
+            $(t).append(`<p>${json.error}</p>`);
             let toast = new bootstrap.Toast(toastLiveExample)
 
             toast.show()
@@ -86,13 +86,11 @@ function deleteTorrents(){
 
 function updateInterface(){
     var settings = {
-        "url": "http://localhost:8080/api/torrents",
-        "method": "GET",
-        "timeout": 0,
+        url: "http://localhost:8080/api/torrents",
+        method: "GET",
+        timeout: 3000,
     };
-    console.log("coucou0")
     makeRequest(settings, (response, status, jqXHR) => {
-    console.log("coucou")
         if (jqXHR.getResponseHeader('content-type').indexOf('text/html') >= 0){
             document.location.href = "/login";
         }

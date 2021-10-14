@@ -81,32 +81,28 @@
         }
     </style>
 </head>
-<body>
-<div class="sidenav">
-    <div class="login-main-text">
-        <h2>RDT Manager</h2>
-        <p>Login</p>
-    </div>
-</div>
+<body class="bg-dark">
 <div class="main">
-    <div class="col-md-6 col-sm-12">
+    <div class="col-md-4 col-sm-10">
         <div class="login-form">
-            <div th:if="${param.logout}">
-                You have been logged out.
-            </div>
-            <form th:action="@{/login}" method='POST'>
-                <div class="form-group">
-                    <label>User Name</label>
-                    <input type="text" class="form-control" name="username" placeholder="User Name">
+            <h1 style="color: white;">RDT Helper</h1>
+            <h3 style="color: white;">Login</h3>
+            <form class="bg-dark" th:action="@{/login}" method="POST">
+                <div th:if="${param.logout}">
+                    You have been logged out.
                 </div>
-                <div class="form-group">
-                    <label>Password</label>
-                    <input  type="password" name="password" class="form-control" placeholder="Password">
+                <div class="mb-2">
+                    <label for="username" style="color: white;" class="form-label" >Username</label>
+                    <input type="text" id="username" name="username" class="form-control" aria-describedby="emailHelp" required>
+                </div>
+                <div class="mb-2">
+                    <label for="password" style="color: white;" class="form-label">Password</label>
+                    <input type="password" class="form-control" name="password" id="password" required>
                 </div>
                 <div th:if="${param.error}">
                     Invalid username and password.
                 </div>
-                <button type="submit" class="btn btn-black">Login</button>
+                <button type="submit" class="btn btn-primary">Submit</button>
             </form>
 
         </div>

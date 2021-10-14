@@ -1,9 +1,9 @@
 function debridLink(link){
 
     if ($("#link-list").length === 0){
-        $("body").append(`
+        $("#list-card").append(`
         <div class="card bg-dark text-white" id="list-container" style="width: 50rem;">
-          <ul class="list-group list-group-flush" id="link-list">
+          <ul class="bg-dark list-group list-group-flush" id="link-list">
 
           </ul>
         </div>`);
@@ -44,12 +44,14 @@ function debridLink(link){
 function bytesHumanReadable(bytes){
 
     if (!bytes){
-        return '0 o/s';
+        return '0 o';
     }
     const mega = 1024;
 
+    bytes /= 10;
+
     if (Math.abs(bytes) < mega) {
-        return `${bytes}o/s`;
+        return `${bytes}`;
     }
 
     const units = ['Ko', 'Mo', 'To'];

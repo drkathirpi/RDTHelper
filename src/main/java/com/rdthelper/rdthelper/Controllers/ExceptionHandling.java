@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.net.ssl.SSLException;
 import javax.servlet.http.HttpServletRequest;
+import java.net.ConnectException;
 
 @ControllerAdvice
 public class ExceptionHandling {
@@ -39,5 +41,11 @@ public class ExceptionHandling {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("login?error");
         return modelAndView;
+    }
+
+
+    @ExceptionHandler({SSLException.class, ConnectException.class})
+    public ResponseEntity<?> sslException(){
+        return new ResponseEntity<>(new ApiError(129, "RealDebrid not responding"), HttpStatus.BAD_REQUEST);
     }
 }

@@ -1,10 +1,8 @@
 package com.rdthelper.rdthelper.Service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.time.Duration;
 import com.rdthelper.rdthelper.Exception.LinkMissingRequest;
 import com.rdthelper.rdthelper.Models.*;
-import com.rdthelper.rdthelper.Repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
@@ -14,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -42,7 +39,11 @@ public class TorrentsService {
 
     @Bean
     public void initRestTemplate(){
-        this.restTemplate = new RestTemplateBuilder().build();
+
+        this.restTemplate = new RestTemplateBuilder()
+                .setConnectTimeout(Duration.ofSeconds(2))
+                .setReadTimeout(Duration.ofSeconds(2))
+                .build();
     }
 
     private HttpHeaders initHeader(){

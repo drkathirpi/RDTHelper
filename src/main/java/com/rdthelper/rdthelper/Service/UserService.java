@@ -26,6 +26,10 @@ public class UserService implements IUserService{
         return userRepository.findByUsername(s);
     }
 
+    public Long count(){
+        return userRepository.count();
+    }
+
     @Transactional
     @Override
     public User save(User s) {

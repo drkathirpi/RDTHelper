@@ -22,7 +22,6 @@ public class SettingsController {
     @GetMapping("/settings")
     public String getSettings(Model model) {
         User user = userRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-        System.out.println(user);
         model.addAttribute("user", user);
         return "settings";
     }

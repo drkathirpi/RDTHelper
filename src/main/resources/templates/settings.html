@@ -10,7 +10,7 @@
     <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css}"/>
     <title th:text="Torrent"></title>
 </head>
-<body class="bg-black">
+<body class="bg-dark">
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
@@ -38,20 +38,32 @@
 </nav>
 
 
-<form class="bg-black" th:object="${user}" action="#" th:action="@{/perform_settings}" method="POST">
-    <div class="mb-3">
-        <label for="username" class="form-label" >Username</label>
-        <input type="text" id="username" class="form-control" th:value="${user.username}" th:field="*{username}" aria-describedby="emailHelp" required>
+<form class="bg-dark container" th:object="${user}" action="#" th:action="@{/perform_settings}" method="POST">
+    <div class="row justify-content-center">
+        <div class="col-6">
+            <label for="username" style="color: white;" class="form-label" >Username</label>
+            <input type="text" id="username" class="form-control" th:value="${user.username}" th:field="*{username}" aria-describedby="emailHelp" required>
+        </div>
     </div>
-    <div class="mb-3">
-        <label for="password" class="form-label">Password</label>
-        <input type="password" th:field="*{password}" class="form-control" id="password" required>
+    <div class="row justify-content-center">
+        <div class="col-6">
+            <label for="password" style="color: white;" class="form-label">Password</label>
+            <input type="password"  th:field="*{password}" class="form-control" id="password" required>
+        </div>
     </div>
-    <div class="mb-3">
-        <label class="form-label" for="token">Real-Debrid Token (TODO url real derid token)</label>
-        <input type="text"  th:value="${rdtToken}" th:field="*{rdtToken}" class="form-control" id="token" required>
+    <div class="row justify-content-center">
+        <div class="col-6">
+            <label class="form-label" style="color: white;" for="token">Real-Debrid Token (TODO url real derid token)</label>
+            <input type="text"  th:value="${rdtToken}" th:field="*{rdtToken}" class="form-control" id="token" required>
+        </div>
     </div>
-    <button type="submit" class="btn btn-primary">Submit</button>
+    <div class="row justify-content-center">
+        <div class="col-6">
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+    </div>
+
+
 </form>
 </body>
 </html>

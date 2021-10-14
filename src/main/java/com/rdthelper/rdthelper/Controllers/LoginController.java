@@ -2,6 +2,7 @@ package com.rdthelper.rdthelper.Controllers;
 
 import com.rdthelper.rdthelper.Models.User;
 import com.rdthelper.rdthelper.Repositories.UserRepository;
+import com.rdthelper.rdthelper.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -16,17 +17,19 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @Controller
 public class LoginController {
 
 
     @Autowired
-    private UserRepository userRepository;
+    private UserService userService;
 
 
     private Boolean hasUser(){
-        Long nbrUser = userRepository.count();
+        Long nbrUser = userService.count();
         return !nbrUser.equals(0L);
     }
 
@@ -42,16 +45,16 @@ public class LoginController {
 
     @PostMapping("/perform_signup")
     public String performSignup(@ModelAttribute User user, Model model){
-        System.out.println(user);
-        userRepository.save(user);
+        userService.save(user);
         return "redirect:/login";
     }
 
     @GetMapping("/login")
     public String Login(){
-        if (!hasUser())
+        if (!hasUser()) {
+            Logger.getLogger(LoginController.class.getName()).log(Level.INFO, "No user found redirect to signup");
             return "redirect:/signup";
-
+        }
         return "login";
     }
 
