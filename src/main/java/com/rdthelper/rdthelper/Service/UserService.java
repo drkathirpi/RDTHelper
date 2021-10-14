@@ -1,11 +1,10 @@
 package com.rdthelper.rdthelper.Service;
 
 import com.rdthelper.rdthelper.Models.User;
-import com.rdthelper.rdthelper.Repositories.SettingsRepository;
 import com.rdthelper.rdthelper.Repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -15,8 +14,7 @@ public class UserService implements IUserService{
 
     @Autowired
     private UserRepository userRepository;
-    @Autowired
-    private SettingsRepository settingsRepository;
+
 
     @Override
     public List<User> findAll() {
@@ -24,8 +22,26 @@ public class UserService implements IUserService{
     }
 
     @Override
+    public User findByUsername(String s) {
+        return userRepository.findByUsername(s);
+    }
+
+    public Long count(){
+        return userRepository.count();
+    }
+
+    @Transactional
+    @Override
     public User save(User s) {
-        settingsRepository.save(s.getSettings());
+        Long nbrUSer = userRepository.count();
+        if (!nbrUSer.equals(0L)){
+            User user = userRepository.findByUsername(s.getUsername());
+            if (user != null){
+                s.setId(user.getId());
+            }
+        }
         return userRepository.save(s);
     }
+
+
 }

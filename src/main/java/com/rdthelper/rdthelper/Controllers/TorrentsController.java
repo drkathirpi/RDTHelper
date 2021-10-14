@@ -15,8 +15,6 @@ public class TorrentsController {
 
     @GetMapping("/torrents")
     public String torrents(Model model){
-        ResponseEntity<?> torrents = torrentsApi.getAll();
-        model.addAttribute("torrents", torrentsApi.getAll());
         return "torrents";
     }
 
@@ -30,4 +28,5 @@ public class TorrentsController {
     public String torrentLinks(Model model, @PathVariable("links") String id){
         return "info";
     }
+
 }

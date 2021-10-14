@@ -3,8 +3,9 @@ package com.rdthelper.rdthelper.Api;
 
 import com.rdthelper.rdthelper.Models.User;
 import com.rdthelper.rdthelper.Service.IUserService;
-import com.rdthelper.rdthelper.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,8 +23,7 @@ public class UserApi {
     }
 
     @PostMapping("/users")
-    public User save(@RequestBody User user){
-        return userService.save(user);
+    public ResponseEntity<?> save(@RequestBody User user){
+        return new ResponseEntity<>(userService.save(user), HttpStatus.OK);
     }
-
 }
