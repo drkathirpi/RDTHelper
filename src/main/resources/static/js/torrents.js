@@ -72,7 +72,7 @@ function deleteTorrents(){
     let allCheckBox = $(".torrentCheckbox:checkbox:checked");
     for (let i = 0; i < allCheckBox.length; i++){
         let settings = {
-            "url": `/api/torrents/${$(allCheckBox[i]).attr('name')}`,
+            "url": `/api/v1/torrents/${$(allCheckBox[i]).attr('name')}`,
             "method": "DELETE",
             "timeout": 0,
         };
@@ -86,7 +86,7 @@ function deleteTorrents(){
 
 function updateInterface(){
     var settings = {
-        url: "http://localhost:8080/api/torrents",
+        url: "http://localhost:8080/api/v1/torrents",
         method: "GET",
         timeout: 3000,
     };
@@ -150,7 +150,7 @@ function showInfo(id){
 
 function acceptAllFile(id){
     let settings = {
-        'url': `http://localhost:8080/api/torrents/accept/${id}`,
+        'url': `http://localhost:8080/api/v1/torrents/accept/${id}`,
         'method': "GET",
         'timeout': 0,
         'processData': false
@@ -180,7 +180,7 @@ function uploadFile(){
     }
 
     var settings = {
-        "url": "http://localhost:8080/api/torrent/upload",
+        "url": "http://localhost:8080/api/v1/torrent/upload",
         "method": "POST",
         "timeout": 0,
         "processData": false,
@@ -194,7 +194,7 @@ function uploadFile(){
         for (let i = 0; i < json.length; i++){
 
             let settingsInfo = {
-                "url": `http://localhost:8080/api/torrents/${json[i]['id']}`,
+                "url": `http://localhost:8080/api/v1/torrents/${json[i]['id']}`,
                 "method": "GET",
                 "timeout": 0,
             }

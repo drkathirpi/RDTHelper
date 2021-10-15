@@ -1,44 +1,55 @@
+let abord = false;
+
 function debridLink(link){
-
-    if ($("#link-list").length === 0){
-        $("#list-card").append(`
-        <div class="card bg-dark text-white" id="list-container" style="width: 50rem;">
-          <ul class="bg-dark list-group list-group-flush" id="link-list">
-
-          </ul>
-        </div>`);
-    }
-
-
-
     var settings = {
-      "url": "/api/torrents/debrid",
-      "method": "POST",
-      "timeout": 0,
-      "headers": {
-        "Content-Type": "application/json"
-      },
-      "data": JSON.stringify({
-        "link": link
-      }),
+        "url": "/api/v1/torrents/debrid",
+        "method": "POST",
+        "timeout": 0,
+        "headers": {
+            "Content-Type": "application/json"
+        },
+        "data": JSON.stringify({
+            "link": link
+        }),
     };
 
     $.ajax(settings).done(function (response) {
+        if (!$("#show_only_link").is(":checked")){
+            $("#link-list").append(
+                generateDownloadCard(response.filename, response.filesize, response.download)
+            )
+        }else{
+            $("#link-list").append(`${response.download}\n`);
+        }
+    }).fail((jqXHR, other, other2) => {
+        generateErrorCard()
+    });
+}
 
-        $("#link-list").append(
-                    `<li class="list-group-item bg-dark text-white">
-                    <div class="card">
+function generateErrorCard(link){
+    return `<li class="list-group-item bg-dark text-white">
+                    <div class="card" style="background-color: firebrick">
                       <div class="card-body">
                         <blockquote class="blockquote mb-0">
-                            <p style="color: black;">${response.filename} - (${bytesHumanReadable(response.filesize)})</p>
-                            <footer><a style="color: black;" href="${response.download}">${response.download}</a></footer>
+                            <p style="color: black;">${link}</p>
                         </blockquote>
                       </div>
                     </div>
                     </li>`
-                )
+}
 
-    });
+
+function generateDownloadCard(filename, fileSize, link){
+    return `<li class="list-group-item bg-dark text-white">
+                    <div class="card">
+                      <div class="card-body">
+                        <blockquote class="blockquote mb-0">
+                            <p style="color: black;">${filename} - (${bytesHumanReadable(fileSize)})</p>
+                            <footer><a style="color: black;" href="${link}">${link}</a></footer>
+                        </blockquote>
+                      </div>
+                    </div>
+                    </li>`
 }
 
 function bytesHumanReadable(bytes){
@@ -70,18 +81,54 @@ function sleep(ms){
 }
 
 async function debridClick(event){
-
+    resetDebrid();
+    generateContainer();
+    abord = false;
     let area = $("#links");
     let links = area.val().split("\n");
     for (let i = 0; i < links.length; i++) {
+        if (abord){
+            return;
+        }
         debridLink(links[i]);
-        await sleep(3000);
+        await sleep(1000);
+    }
+}
+
+
+function generateContainer(){
+    if ($("#link-list").length === 0){
+        if ($("#show_only_link").is(":checked")){
+            $("#list-card").append(`
+                <div id="list-container" class="row align-items-center">
+                    <div class="col-20">
+                        <textarea style="height: 300px;" class="form-control" id="link-list"></textarea>
+                    </div>
+                </div>
+                
+            `);
+        }else{
+            $("#list-card").append(`
+            <div id="list-container" class="row justify-content-center">
+                <div class="col-6">
+                    <div class="card bg-dark text-white"  style="width: 50rem;">
+                      <ul class="bg-dark list-group list-group-flush" id="link-list">
+            
+                      </ul>
+                    </div>
+                </div>
+            </div>
+                
+        `);
+        }
     }
 }
 
 function resetDebrid(){
-    if ($("#list-container").length !== 0) {
-        $("#list-container").remove();
+    const listContainer = $("#list-container");
+    abord = true;
+    if (listContainer.length !== 0) {
+        listContainer.remove();
     }
 }
 

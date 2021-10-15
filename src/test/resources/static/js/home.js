@@ -1,32 +1,37 @@
 function debridLink(link){
 
-    if ($("#link-list").length === 0){
+    if ($("#link-list").length === 0 && !$("#show_only_link").is(":checked")){
         $("#list-card").append(`
         <div class="card bg-dark text-white" id="list-container" style="width: 50rem;">
           <ul class="bg-dark list-group list-group-flush" id="link-list">
 
           </ul>
-        </div>`);
+        </div>
+        `);
+    }else{
+        $("#list-card").append(`
+        <textarea id="link-list"></textarea>
+        `);
     }
 
 
 
     var settings = {
-      "url": "/api/torrents/debrid",
-      "method": "POST",
-      "timeout": 0,
-      "headers": {
-        "Content-Type": "application/json"
-      },
-      "data": JSON.stringify({
-        "link": link
-      }),
+        "url": "/api/v1/torrents/debrid",
+        "method": "POST",
+        "timeout": 0,
+        "headers": {
+            "Content-Type": "application/json"
+        },
+        "data": JSON.stringify({
+            "link": link
+        }),
     };
 
     $.ajax(settings).done(function (response) {
-
-        $("#link-list").append(
-                    `<li class="list-group-item bg-dark text-white">
+        if ($("#link-list").length === 0 && !$("#show_only_link").is(":checked")){
+            $("#link-list").append(
+                `<li class="list-group-item bg-dark text-white">
                     <div class="card">
                       <div class="card-body">
                         <blockquote class="blockquote mb-0">
@@ -36,7 +41,11 @@ function debridLink(link){
                       </div>
                     </div>
                     </li>`
-                )
+            )
+        }else{
+            $("#link-list").append(`${response.download}\n`);
+        }
+
 
     });
 }

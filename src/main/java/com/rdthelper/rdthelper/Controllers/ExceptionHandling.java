@@ -10,8 +10,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.naming.ServiceUnavailableException;
 import javax.net.ssl.SSLException;
 import javax.servlet.http.HttpServletRequest;
 import java.net.ConnectException;
@@ -47,5 +49,16 @@ public class ExceptionHandling {
     @ExceptionHandler({SSLException.class, ConnectException.class})
     public ResponseEntity<?> sslException(){
         return new ResponseEntity<>(new ApiError(129, "RealDebrid not responding"), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(HttpServerErrorException.class)
+    public ResponseEntity<?> serverExeption() {
+        return new ResponseEntity<>(new ApiError(130, "Are you still premium?"), HttpStatus.BAD_REQUEST);
+    }
+
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<?> otherExcpetion(){
+        return new ResponseEntity<>(new ApiError(0, "Unknown error"), HttpStatus.BAD_REQUEST);
     }
 }
