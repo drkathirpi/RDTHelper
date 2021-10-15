@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-@RequestMapping("/api")
+@RequestMapping("/api/v1")
 @CrossOrigin
 @RestController
 public class TorrentsApi {
