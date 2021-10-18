@@ -6,6 +6,6 @@ RUN mvn -f /usr/src/app/pom.xml clean package
 
 
 FROM gcr.io/distroless/java
-COPY --from=build /usr/src/app/target/rdthelper-0.0.1-SNAPSHOT.jar /usr/src/app/target/rdthelper-0.0.1-SNAPSHOT.jar
+COPY --from=build /usr/src/app/target/rdthelper-0.0.1-SNAPSHOT.jar /usr/app/rdthelper-0.0.1-SNAPSHOT.jar
 EXPOSE 8080
 ENTRYPOINT ["java","-jar","/usr/app/rdthelper-0.0.1-SNAPSHOT.jar"]
