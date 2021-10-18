@@ -1,7 +1,7 @@
 let abord = false;
 
 function debridLink(link){
-    var settings = {
+    let settings = {
         "url": "/api/v1/torrents/debrid",
         "method": "POST",
         "timeout": 0,
@@ -12,17 +12,18 @@ function debridLink(link){
             "link": link
         }),
     };
-
+    let linkCheckbox = $("#show_only_link");
+    let linkList = $("#link-list");
     $.ajax(settings).done(function (response) {
-        if (!$("#show_only_link").is(":checked")){
-            $("#link-list").append(
+        if (!linkCheckbox.is(":checked")){
+            linkList.append(
                 generateDownloadCard(response.filename, response.filesize, response.download)
             )
         }else{
-            $("#link-list").append(`${response.download}\n`);
+            linkList.append(`${response.download}\n`);
         }
     }).fail((jqXHR, other, other2) => {
-        generateErrorCard()
+        linkList.parentElement.append(generateErrorCard(jqXHR.responseText));
     });
 }
 

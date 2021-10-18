@@ -35,10 +35,11 @@ public class LoginUsageTest {
         mockMvc.perform(get("/torrents")).andReturn().getResponse();
     }
 
-   // @Test
-   // public void shouldGetSettingsModelView() throws Exception{
-   //     mockMvc.perform(get("/settings")).andReturn().getResponse();
-   // }
+   @Test
+   public void shouldGetSettingsModelView() throws Exception{
+       String result = mockMvc.perform(get("/settings")).andReturn().getResponse().getContentAsString();
+       System.out.println(result);
+   }
 
 
 
