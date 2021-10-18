@@ -28,7 +28,7 @@ function bytesHumanReadable(bytes){
     return `${bytes.toFixed(1)} ${units[u]}/s`;
 }
 
-$(window).resize((selector) => {
+$(window).resize(() => {
     changeTableView();
 });
 
@@ -86,7 +86,7 @@ function deleteTorrents(){
 
 function updateInterface(){
     var settings = {
-        url: "http://localhost:8080/api/v1/torrents",
+        url: "/api/v1/torrents",
         method: "GET",
         timeout: 3000,
     };
@@ -150,7 +150,7 @@ function showInfo(id){
 
 function acceptAllFile(id){
     let settings = {
-        'url': `http://localhost:8080/api/v1/torrents/accept/${id}`,
+        'url': `/api/v1/torrents/accept/${id}`,
         'method': "GET",
         'timeout': 0,
         'processData': false
@@ -180,7 +180,7 @@ function uploadFile(){
     }
 
     var settings = {
-        "url": "http://localhost:8080/api/v1/torrent/upload",
+        "url": "/api/v1/torrent/upload",
         "method": "POST",
         "timeout": 0,
         "processData": false,
@@ -194,7 +194,7 @@ function uploadFile(){
         for (let i = 0; i < json.length; i++){
 
             let settingsInfo = {
-                "url": `http://localhost:8080/api/v1/torrents/${json[i]['id']}`,
+                "url": `/api/v1/torrents/${json[i]['id']}`,
                 "method": "GET",
                 "timeout": 0,
             }
