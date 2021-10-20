@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
+@RequestMapping("/web")
 @Controller
 public class HomeController {
 
@@ -22,13 +23,13 @@ public class HomeController {
     private TorrentsService torrentsService;
 
 
-    @GetMapping("/")
+    @GetMapping("/home")
     public String home(){
         return "home";
     }
 
 
-    @PostMapping("/")
+    @PostMapping("/home")
     public String postHome(@RequestParam("ids") String[] links, Model model) throws LinkMissingRequest {
         StringBuilder nonDebridLinks = new StringBuilder();
         for (String link : links){

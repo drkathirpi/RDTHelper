@@ -20,14 +20,14 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav">
-                <a class="nav-link" aria-current="page" th:href="@{/}">Home</a>
-                <a class="nav-link" th:href="@{/torrents}">Torrents</a>
-                <a class="nav-link active" th:href="@{/settings}">Settings</a>
+                <a class="nav-link" aria-current="page" th:href="@{/web/home}">Home</a>
+                <a class="nav-link" th:href="@{/web/torrents}">Torrents</a>
+                <a class="nav-link active" th:href="@{/web/settings}">Settings</a>
             </div>
             <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item">
-                        <a class="nav-link" th:href="@{/logout}">Logout</a>
+                        <a class="nav-link" th:href="@{/web/logout}">Logout</a>
                     </li>
                 </ul>
             </div>
@@ -38,7 +38,7 @@
 </nav>
 
 
-<form class="bg-dark container" th:object="${user}" action="#" th:action="@{/perform_settings}" method="POST">
+<form class="bg-dark container" th:object="${user}" action="#" th:action="@{/web/perform_settings}" method="POST">
     <div class="row justify-content-center">
         <div class="col-6">
             <label for="username" style="color: white;" class="form-label" >Username</label>

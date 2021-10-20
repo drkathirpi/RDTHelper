@@ -57,8 +57,5 @@ public class ExceptionHandling {
     }
 
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<?> otherExcpetion(){
-        return new ResponseEntity<>(new ApiError(0, "Unknown error"), HttpStatus.BAD_REQUEST);
-    }
+
 }

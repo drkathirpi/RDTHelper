@@ -21,14 +21,14 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav">
-                <a class="nav-link active" aria-current="page" th:href="@{/}">Home</a>
-                <a class="nav-link" th:href="@{/torrents}">Torrents</a>
-                <a class="nav-link" th:href="@{/settings}">Settings</a>
+                <a class="nav-link active" aria-current="page" th:href="@{/web/home}">Home</a>
+                <a class="nav-link" th:href="@{/web/torrents}">Torrents</a>
+                <a class="nav-link" th:href="@{/web/settings}">Settings</a>
             </div>
             <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item">
-                        <a class="nav-link" th:href="@{/logout}">Logout</a>
+                        <a class="nav-link" th:href="@{/web/logout}">Logout</a>
                     </li>
                 </ul>
             </div>
@@ -46,7 +46,7 @@
     <br/>
     <div class="row justify-content-center">
         <div class="col"></div>
-        <label style="color: white;" for="show_only_link">show only link
+        <label style="color: white;" for="show_only_link">show generated links
             <input id="show_only_link" type="checkbox"/>
         </label>
 

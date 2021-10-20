@@ -1,9 +1,12 @@
 package com.rdthelper.rdthelper.Config;
 
+import com.rdthelper.rdthelper.Filter.JWTAuthFilter;
+import com.rdthelper.rdthelper.Filter.JWTLoginFilter;
 import com.rdthelper.rdthelper.Service.CustomUserDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -16,6 +19,7 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.ExceptionMappingAuthenticationFailureHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 
 import javax.sql.DataSource;
@@ -23,9 +27,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-@Configuration
 @EnableWebSecurity
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+public class SecurityConfig {
 
     @Bean
     public UserDetailsService userDetailsService() {
@@ -68,31 +71,67 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return authProvider;
     }
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.authenticationProvider(authenticationProvider());
+
+    @Configuration
+    @Order(1)
+    public class ApiSecurityConfig extends WebSecurityConfigurerAdapter{
+
+        @Override
+        protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+            auth.authenticationProvider(authenticationProvider());
+        }
+
+
+        @Override
+        protected void configure(HttpSecurity http) throws Exception {
+            http.csrf()
+                    .and()
+                    .cors()
+                    .disable()
+                    .antMatcher("/api/**").authorizeRequests()
+                    .antMatchers("/api/login").permitAll()
+                    .antMatchers("/api/signup").permitAll()
+                    .anyRequest().authenticated()
+                    .and()
+                    .addFilterBefore(new JWTLoginFilter("/api/login", authenticationManager()), UsernamePasswordAuthenticationFilter.class)
+                    .addFilterBefore(new JWTAuthFilter(), UsernamePasswordAuthenticationFilter.class);
+        }
+    }
+
+    @Configuration
+    @Order(2)
+    public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
+        @Override
+        protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+            auth.authenticationProvider(authenticationProvider());
+        }
+
+
+        @Override
+        protected void configure(HttpSecurity http) throws Exception {
+
+            http.csrf()
+                    .and()
+                    .cors()
+                    .disable()
+                    .antMatcher("/web/**").authorizeRequests()
+                    .antMatchers("/web/login").permitAll()
+                    .antMatchers("/web/signup").permitAll()
+                    .antMatchers("/web/perform_signup").permitAll()
+                    .anyRequest().authenticated()
+                    .and()
+                    .formLogin()
+                    .loginPage("/web/login")
+                    .failureHandler(authenticationFailureHandler())
+                    .defaultSuccessUrl("/web/home", true)
+                    .and()
+                    .addFilterBefore(new JWTLoginFilter("/api/login", authenticationManager()), UsernamePasswordAuthenticationFilter.class)
+                    .addFilterBefore(new JWTAuthFilter(), UsernamePasswordAuthenticationFilter.class);
+
+        }
     }
 
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable()
-                .authorizeRequests()
-                .antMatchers("/login").permitAll()
-                .antMatchers("/signup").permitAll()
-                .antMatchers("/perform_signup").permitAll()
-                .anyRequest().authenticated()
-                .and()
-                .formLogin()
-                .loginPage("/login")
-                .failureHandler(authenticationFailureHandler())
-                .defaultSuccessUrl("/", true)
-                .and()
-                .logout()
-                .logoutUrl("/perform_logout")
-                .deleteCookies("JSESSIONID")
-                .logoutSuccessHandler(logoutSuccessHandler());
-    }
 
 
 }

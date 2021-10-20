@@ -23,7 +23,7 @@ function debridLink(link){
             linkList.append(`${response.download}\n`);
         }
     }).fail((jqXHR, other, other2) => {
-        linkList.parentElement.append(generateErrorCard(jqXHR.responseText));
+        linkList.append(generateErrorCard(jqXHR.responseText));
     });
 }
 
@@ -41,7 +41,7 @@ function generateErrorCard(link){
 
 
 function generateDownloadCard(filename, fileSize, link){
-    return `<li class="list-group-item bg-dark text-white">
+    return `<li style="background-color: #a01414" class="list-group-item bg-dark text-white">
                     <div class="card">
                       <div class="card-body">
                         <blockquote class="blockquote mb-0">
@@ -86,6 +86,10 @@ async function debridClick(event){
     generateContainer();
     abord = false;
     let area = $("#links");
+
+    if (area.val() === "" || area.val() === "\n"){
+        return;
+    }
     let links = area.val().split("\n");
     for (let i = 0; i < links.length; i++) {
         if (abord){

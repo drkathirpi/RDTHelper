@@ -16,7 +16,9 @@ public class CustomHandlerInterceptorAdapter implements AsyncHandlerInterceptor 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
-        logger.log(Level.INFO, String.format("[%s] Request: %s :: USER: %s (%s)", request.getMethod(), request.getRequestURL().toString(), SecurityContextHolder.getContext().getAuthentication().getName(), request.getRemoteAddr()));
+        if (SecurityContextHolder.getContext().getAuthentication() != null){
+            logger.log(Level.INFO, String.format("[%s] Request: %s :: USER: %s (%s)", request.getMethod(), request.getRequestURL().toString(), SecurityContextHolder.getContext().getAuthentication().getName(), request.getRemoteAddr()));
+        }
 
 
         return AsyncHandlerInterceptor.super.preHandle(request, response, handler);

@@ -50,9 +50,9 @@ let toastTrigger = document.getElementById('liveToastBtn')
     let toastLiveExample = document.getElementById('liveToast')
 
 function makeRequest(settings, callback){
-    console.log("oucou");
+
     $.ajax(settings).done(callback).fail((jqXHR, textStatus, errorThrown) => {
-    console.log("foufou");
+
     console.log(jqXHR)
         let t = $("#toast-body");
         if ($(t).children().length === 0){
@@ -92,7 +92,7 @@ function updateInterface(){
     };
     makeRequest(settings, (response, status, jqXHR) => {
         if (jqXHR.getResponseHeader('content-type').indexOf('text/html') >= 0){
-            document.location.href = "/login";
+            document.location.href = "/web/login";
         }
         var torrents = response;
         if ($("#tbodyTorrent tr").length === 0 || $(`#filename_${torrents[0].id}`).length === 0 ){

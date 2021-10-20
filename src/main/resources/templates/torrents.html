@@ -41,14 +41,14 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                 <div class="navbar-nav">
-                    <a class="nav-link" aria-current="page" th:href="@{/}">Home</a>
-                    <a class="nav-link active" th:href="@{/torrents}">Torrents</a>
-                    <a class="nav-link" th:href="@{/settings}">Settings</a>
+                    <a class="nav-link" aria-current="page" th:href="@{/web/home}">Home</a>
+                    <a class="nav-link active" th:href="@{/web/torrents}">Torrents</a>
+                    <a class="nav-link" th:href="@{/web/settings}">Settings</a>
                 </div>
                 <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
                     <ul class="navbar-nav ml-auto">
                         <li class="nav-item">
-                            <a class="nav-link" th:href="@{/logout}">Logout</a>
+                            <a class="nav-link" th:href="@{/web/logout}">Logout</a>
                         </li>
                     </ul>
                 </div>
@@ -67,7 +67,7 @@
     </div>
 
 
-    <form action="#" th:action="@{/}" th:method="POST">
+    <form action="#" th:action="@{/web/home}" th:method="POST">
         <table class="table w-75 table-dark table-sm mx-auto w-auto" id="tableTorrent">
             <thead>
             <tr>
