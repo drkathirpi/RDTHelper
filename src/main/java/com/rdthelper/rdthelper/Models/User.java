@@ -25,6 +25,12 @@ public class User {
 
 
     public User(){}
+    public User(String username, String password, String rdtToken, Boolean showAll){
+        this.username = username;
+        this.password = password;
+        this.rdtToken = rdtToken;
+        this.showAll = showAll;
+    }
 
 
     public Long getId() {

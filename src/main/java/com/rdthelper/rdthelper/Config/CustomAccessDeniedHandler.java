@@ -6,6 +6,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.rdthelper.rdthelper.Models.ApiError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,7 +26,8 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
         if (auth != null) {
             LOG.warn("User: " + auth.getName() + " attempted to access the protected URL: " + request.getRequestURI());
         }
-        System.out.println("Acces Denied bordel de merde");
-        response.sendRedirect(request.getContextPath() + "/accessDenied");
+        exc.printStackTrace();
+        response.setStatus(403);
+        response.getWriter().write(new ApiError(2, "Access denied").toString());
     }
 }

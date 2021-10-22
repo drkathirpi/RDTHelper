@@ -6,7 +6,8 @@ function debridLink(link){
         "method": "POST",
         "timeout": 0,
         "headers": {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " +  Cookies.get('Authorization')
         },
         "data": JSON.stringify({
             "link": link

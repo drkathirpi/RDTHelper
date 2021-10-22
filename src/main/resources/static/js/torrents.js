@@ -1,5 +1,3 @@
-
-
 $(window).on('load', function () {
     updateInterface();
     changeTableView();
@@ -89,6 +87,9 @@ function updateInterface(){
         url: "/api/v1/torrents",
         method: "GET",
         timeout: 3000,
+        headers: {
+            Authorization: 'Bearer ' + Cookies.get('Authorization')
+        }
     };
     makeRequest(settings, (response, status, jqXHR) => {
         if (jqXHR.getResponseHeader('content-type').indexOf('text/html') >= 0){
@@ -150,10 +151,10 @@ function showInfo(id){
 
 function acceptAllFile(id){
     let settings = {
-        'url': `/api/v1/torrents/accept/${id}`,
-        'method': "GET",
-        'timeout': 0,
-        'processData': false
+        url: `/api/v1/torrents/accept/${id}`,
+        method: "GET",
+        timeout: 0,
+        processData: false,
     }
 
     makeRequest(settings, (result) => {
@@ -180,13 +181,13 @@ function uploadFile(){
     }
 
     var settings = {
-        "url": "/api/v1/torrent/upload",
-        "method": "POST",
-        "timeout": 0,
-        "processData": false,
-        "mimeType": "multipart/form-data",
-        "contentType": false,
-        "data": form
+        url: "/api/v1/torrent/upload",
+        method: "POST",
+        timeout: 0,
+        processData: false,
+        mimeType: "multipart/form-data",
+        contentType: false,
+        data: form,
     };
 
     $.ajax(settings).done(function (response) {
@@ -194,9 +195,9 @@ function uploadFile(){
         for (let i = 0; i < json.length; i++){
 
             let settingsInfo = {
-                "url": `/api/v1/torrents/${json[i]['id']}`,
-                "method": "GET",
-                "timeout": 0,
+                url: `/api/v1/torrents/${json[i]['id']}`,
+                method: "GET",
+                timeout: 0,
             }
 
             makeRequest(settingsInfo, (r) => {

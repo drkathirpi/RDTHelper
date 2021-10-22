@@ -34,7 +34,7 @@ public class LoginController {
 
     @GetMapping("/signup")
     public String signup(Model model){
-        if (hasUser()) return "redirect:/login";
+        if (hasUser()) return "redirect:/web/login";
 
         User user = new User();
         model.addAttribute("user", user);
@@ -44,14 +44,14 @@ public class LoginController {
     @PostMapping("/perform_signup")
     public String performSignup(@ModelAttribute User user, Model model){
         userService.save(user);
-        return "redirect:/login";
+        return "redirect:/web/login";
     }
 
     @GetMapping("/login")
     public String Login(){
         if (!hasUser()) {
             Logger.getLogger(LoginController.class.getName()).log(Level.INFO, "No user found redirect to signup");
-            return "redirect:/signup";
+            return "redirect:/web/signup";
         }
         return "login";
     }
@@ -62,7 +62,7 @@ public class LoginController {
         if (auth != null){
             new SecurityContextLogoutHandler().logout(request, response, auth);
         }
-        return "redirect:/login?logout";
+        return "redirect:/web/login?logout";
     }
 
 }

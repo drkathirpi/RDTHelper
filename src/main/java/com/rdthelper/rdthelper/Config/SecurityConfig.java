@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -84,14 +85,19 @@ public class SecurityConfig {
 
         @Override
         protected void configure(HttpSecurity http) throws Exception {
-            http.csrf()
-                    .and()
+            System.out.println("init api configuration");
+            http.csrf().disable()
                     .cors()
                     .disable()
                     .antMatcher("/api/**").authorizeRequests()
                     .antMatchers("/api/login").permitAll()
-                    .antMatchers("/api/signup").permitAll()
+                    .antMatchers("/api/v1/signup").permitAll()
+                    .antMatchers("**.js").permitAll()
                     .anyRequest().authenticated()
+                    .and()
+                    .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                    .and()
+                    .exceptionHandling().accessDeniedHandler(accessDeniedHandler())
                     .and()
                     .addFilterBefore(new JWTLoginFilter("/api/login", authenticationManager()), UsernamePasswordAuthenticationFilter.class)
                     .addFilterBefore(new JWTAuthFilter(), UsernamePasswordAuthenticationFilter.class);
@@ -109,9 +115,8 @@ public class SecurityConfig {
 
         @Override
         protected void configure(HttpSecurity http) throws Exception {
-
-            http.csrf()
-                    .and()
+            System.out.println("init web configuration");
+            http.csrf().disable()
                     .cors()
                     .disable()
                     .antMatcher("/web/**").authorizeRequests()
@@ -122,14 +127,19 @@ public class SecurityConfig {
                     .and()
                     .formLogin()
                     .loginPage("/web/login")
-                    .failureHandler(authenticationFailureHandler())
+                    .loginProcessingUrl("/web/perform_login")
                     .defaultSuccessUrl("/web/home", true)
                     .and()
-                    .addFilterBefore(new JWTLoginFilter("/api/login", authenticationManager()), UsernamePasswordAuthenticationFilter.class)
+                    .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                    .and()
                     .addFilterBefore(new JWTAuthFilter(), UsernamePasswordAuthenticationFilter.class);
-
         }
     }
+
+
+
+
+
 
 
 

@@ -31,12 +31,23 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
+        System.out.println("attemptAuthentication");
+        String username;
+        String password;
         String body = request.getReader().lines().collect(Collectors.joining());
-        ObjectMapper objectMapper = new ObjectMapper();
-        Map<String, Object> map = objectMapper.readValue(body, Map.class);
-
-        final String username = map.get("username").toString();
-        final String password = map.get("password").toString();
+        if (request.getParameter("username") != null){
+            username = request.getParameter("username");
+            password = request.getParameter("password");
+        }else if (!body.isEmpty()){
+            System.out.printf("voici le body: %s%n", body);
+            ObjectMapper objectMapper = new ObjectMapper();
+            Map<String, Object> map = objectMapper.readValue(body, Map.class);
+            username = map.get("username").toString();
+            password = map.get("password").toString();
+        }else {
+            username = null;
+            password = null;
+        }
 
         System.out.printf("JWTLoginFilter.attemptAuthentication: username/password= %s,%s", username, password);
         System.out.println();
@@ -56,6 +67,7 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
 
         response.getWriter().write(new Authorization(authorizationString).toString());
         Cookie cookie = new Cookie("Authorization", authorizationString);
+        cookie.setPath("/web");
         response.addCookie(cookie);
         System.out.println("Authorization String=" + authorizationString);
     }

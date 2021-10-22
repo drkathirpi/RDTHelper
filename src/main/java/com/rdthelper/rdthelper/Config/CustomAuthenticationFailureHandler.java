@@ -15,7 +15,7 @@ public class CustomAuthenticationFailureHandler extends SimpleUrlAuthenticationF
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AuthenticationException e) throws IOException, ServletException {
-        String redirectURL = "/login?error";
+        String redirectURL = "/web/login?error";
         super.setDefaultFailureUrl(redirectURL);
         super.onAuthenticationFailure(httpServletRequest, httpServletResponse, e);
     }

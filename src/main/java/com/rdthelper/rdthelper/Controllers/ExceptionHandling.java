@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rdthelper.rdthelper.Exception.LinkMissingRequest;
+import com.rdthelper.rdthelper.Exception.UserAlreadyCreatedException;
 import com.rdthelper.rdthelper.Models.ApiError;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -52,8 +53,13 @@ public class ExceptionHandling {
     }
 
     @ExceptionHandler(HttpServerErrorException.class)
-    public ResponseEntity<?> serverExeption() {
+    public ResponseEntity<?> serverException() {
         return new ResponseEntity<>(new ApiError(130, "Are you still premium?"), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(UserAlreadyCreatedException.class)
+    public ResponseEntity<?> userAlreadyCreatedException(){
+        return new ResponseEntity<>(new ApiError(131, "Only 1 user can be created"), HttpStatus.BAD_REQUEST);
     }
 
 

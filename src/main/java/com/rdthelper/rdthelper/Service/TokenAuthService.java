@@ -14,7 +14,7 @@ import java.util.Date;
 public class TokenAuthService {
     private static final long EXPIRATION = 864_000_000;
     private static final String SECRET = "TODOCacherLaSecretPassPhrase";
-    private static final String PREFIX = "Bearer";
+    private static final String PREFIX = "Bearer ";
     private final static String HEADER = "Authorization";
 
     public static void addAuth(HttpServletResponse res, String username){
@@ -29,24 +29,29 @@ public class TokenAuthService {
                 .signWith(SignatureAlgorithm.HS512, SECRET).compact();
     }
 
+    private static Authentication parseToken(String token){
+        if (token.contains("Bearer")){
+            token = token.replace(PREFIX, "");
+        }
+        String user = Jwts.parser().setSigningKey(SECRET).parseClaimsJws(token).getBody()
+                .getSubject();
+        return user != null ? new UsernamePasswordAuthenticationToken(user, null, Collections.emptyList()) : null;
+    }
+
     public static Authentication getAuthentication(HttpServletRequest request) {
+
         String tokenHeader = request.getHeader(HEADER);
         Cookie[] cookies = request.getCookies();
 
 
         if (tokenHeader != null) {
-            // parse the token.
-            String user = Jwts.parser().setSigningKey(SECRET).parseClaimsJws(tokenHeader.replace(PREFIX, "")).getBody()
-                    .getSubject();
-
-            return user != null ? new UsernamePasswordAuthenticationToken(user, null, Collections.emptyList()) : null;
+            return parseToken(tokenHeader);
         }
 
-        if (cookies.length != 0){
+        if (cookies != null && cookies.length != 0){
             for (Cookie cookie : cookies) {
-                if (cookie.getName().equals("Authorization")){
-                    String user = Jwts.parser().setSigningKey(SECRET).parseClaimsJws(cookie.getValue().replace(PREFIX, "")).getBody().getSubject();
-                    return user != null ? new UsernamePasswordAuthenticationToken(user, null, Collections.emptyList()) : null;
+                if (cookie.getName().equals(HEADER)){
+                    return parseToken(cookie.getValue());
                 }
             }
         }
