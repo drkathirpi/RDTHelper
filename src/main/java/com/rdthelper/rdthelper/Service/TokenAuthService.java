@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.Date;
 
 public class TokenAuthService {
+
     private static final long EXPIRATION = 864_000_000;
     private static final String SECRET = "TODOCacherLaSecretPassPhrase";
     private static final String PREFIX = "Bearer ";
@@ -30,7 +31,7 @@ public class TokenAuthService {
     }
 
     private static Authentication parseToken(String token){
-        if (token.contains("Bearer")){
+        if (token.contains(PREFIX)){
             token = token.replace(PREFIX, "");
         }
         String user = Jwts.parser().setSigningKey(SECRET).parseClaimsJws(token).getBody()

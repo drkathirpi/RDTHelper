@@ -1,8 +1,10 @@
 package com.rdthelper.rdthelper.Filter;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.util.JsonParserDelegate;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.rdthelper.rdthelper.Exception.NoValidCredential;
 import com.rdthelper.rdthelper.Models.Authorization;
 import com.rdthelper.rdthelper.Service.TokenAuthService;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -35,15 +37,25 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
         String username;
         String password;
         String body = request.getReader().lines().collect(Collectors.joining());
+
+        //Web
         if (request.getParameter("username") != null){
             username = request.getParameter("username");
             password = request.getParameter("password");
         }else if (!body.isEmpty()){
-            System.out.printf("voici le body: %s%n", body);
+            //Api
             ObjectMapper objectMapper = new ObjectMapper();
-            Map<String, Object> map = objectMapper.readValue(body, Map.class);
-            username = map.get("username").toString();
-            password = map.get("password").toString();
+            try{
+                Map<String, Object> map = objectMapper.readValue(body, Map.class);
+                username = map.get("username").toString();
+                password = map.get("password").toString();
+            }catch (JsonParseException e){
+                String[] credentials = body.split("&");
+                username = credentials[0].split("=")[1];
+                password = credentials[1].split("=")[1];
+
+            }
+
         }else {
             username = null;
             password = null;
@@ -59,16 +71,24 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
                                             Authentication authResult) throws IOException, ServletException {
 
-        System.out.println("JWTLoginFilter.successfulAuthentication:");
-
+        System.out.println("successfulAuthentication");
         String authorizationString = TokenAuthService.generateToken(authResult.getName());
 
         response.setContentType("application/json");
 
+        //Ecriture du body
         response.getWriter().write(new Authorization(authorizationString).toString());
+
+        //Création du cookie
         Cookie cookie = new Cookie("Authorization", authorizationString);
         cookie.setPath("/web");
+
         response.addCookie(cookie);
-        System.out.println("Authorization String=" + authorizationString);
+        response.setStatus(200);
+
+        response.sendRedirect("/web/home");
+
+
+        System.out.println("Authorization=" + authorizationString);
     }
 }

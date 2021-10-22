@@ -2,6 +2,7 @@ package com.rdthelper.rdthelper.Service;
 
 import java.time.Duration;
 import com.rdthelper.rdthelper.Exception.LinkMissingRequest;
+import com.rdthelper.rdthelper.Exception.NoUserFoundExcpetion;
 import com.rdthelper.rdthelper.Models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -31,9 +32,12 @@ public class TorrentsService {
 
     private String rdtToken;
 
-    public String initRdtToken(){
+    public String initRdtToken() throws NoUserFoundExcpetion{
         String authentication = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByUsername(authentication);
+        if (user == null){
+            throw new NoUserFoundExcpetion();
+        }
         return user.getRdtToken();
     }
 
@@ -46,7 +50,7 @@ public class TorrentsService {
                 .build();
     }
 
-    private HttpHeaders initHeader(){
+    private HttpHeaders initHeader() throws NoUserFoundExcpetion {
         rdtToken = initRdtToken();
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setBearerAuth(rdtToken);
@@ -54,25 +58,25 @@ public class TorrentsService {
     }
 
 
-    public ResponseEntity<?> getAll() throws HttpClientErrorException {
+    public ResponseEntity<?> getAll() throws HttpClientErrorException, NoUserFoundExcpetion {
         HttpEntity<?> httpEntity = new HttpEntity<>(initHeader());
         ResponseEntity<?> response = restTemplate.exchange(String.format("%s%s", BASE_URL,"/torrents"), HttpMethod.GET, httpEntity, Object.class);
         return new ResponseEntity<>(response.getBody(), HttpStatus.OK);
     }
 
-    public ResponseEntity<?> getOne(String id) throws HttpClientErrorException {
+    public ResponseEntity<?> getOne(String id) throws HttpClientErrorException, NoUserFoundExcpetion {
         HttpEntity<?> httpEntity = new HttpEntity<>(initHeader());
         ResponseEntity<Torrents> response = restTemplate.exchange(String.format("%s%s%s", BASE_URL,"/torrents/info/", id), HttpMethod.GET, httpEntity, Torrents.class);
         return new ResponseEntity<Torrents>(response.getBody(), HttpStatus.OK);
     }
 
-    public ResponseEntity<?> deleteOne(String id) throws HttpClientErrorException {
+    public ResponseEntity<?> deleteOne(String id) throws HttpClientErrorException, NoUserFoundExcpetion {
         HttpEntity<?> httpEntity = new HttpEntity<>(initHeader());
         restTemplate.exchange(String.format("%s%s%s", BASE_URL, "/torrents/delete/", id), HttpMethod.DELETE, httpEntity, String.class);
         return new ResponseEntity<>(new ApiError(0, "OK"), HttpStatus.OK);
     }
 
-    public ResponseEntity<?> addTorrent(MultipartFile ...files) throws HttpClientErrorException, IOException {
+    public ResponseEntity<?> addTorrent(MultipartFile ...files) throws HttpClientErrorException, IOException, NoUserFoundExcpetion {
         List<RDTUpload> rdtFiles = new ArrayList<>();
         HttpHeaders httpHeaders = initHeader();
         httpHeaders.setContentType(MediaType.MULTIPART_FORM_DATA);
@@ -84,14 +88,14 @@ public class TorrentsService {
         return new ResponseEntity<>(rdtFiles, HttpStatus.OK);
     }
 
-    public ResponseEntity<?> startTorrent(String id) throws HttpClientErrorException {
+    public ResponseEntity<?> startTorrent(String id) throws HttpClientErrorException, NoUserFoundExcpetion {
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("files", "all");
         HttpEntity<?> httpEntity = new HttpEntity<>(body, initHeader());
         return restTemplate.exchange(String.format("%s%s%s", BASE_URL, "/torrents/selectFiles/", id), HttpMethod.POST, httpEntity, RDTUpload.class);
     }
 
-    public ResponseEntity<?> debridLink(LinkRequest link) throws HttpClientErrorException, LinkMissingRequest {
+    public ResponseEntity<?> debridLink(LinkRequest link) throws HttpClientErrorException, LinkMissingRequest, NoUserFoundExcpetion {
         System.out.println(link);
         if (link.getLink() == null || link.getLink().isEmpty()){
             throw new LinkMissingRequest();

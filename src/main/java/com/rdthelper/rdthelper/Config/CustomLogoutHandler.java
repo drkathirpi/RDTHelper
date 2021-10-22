@@ -16,7 +16,6 @@ public class CustomLogoutHandler extends SimpleUrlLogoutSuccessHandler implement
         super();
     }
 
-    // API
 
     @Override
     public void onLogoutSuccess(final HttpServletRequest request, final HttpServletResponse response, final Authentication authentication) throws IOException, ServletException {

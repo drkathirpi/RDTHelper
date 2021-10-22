@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.logging.Level;
@@ -58,7 +59,13 @@ public class LoginController {
 
     @GetMapping("/logout")
     public String logout(HttpServletRequest request, HttpServletResponse response){
+        System.out.println("logout");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        Cookie cookie = new Cookie("Authorization", "");
+        cookie.setMaxAge(0);
+
+        response.addCookie(cookie);
         if (auth != null){
             new SecurityContextLogoutHandler().logout(request, response, auth);
         }

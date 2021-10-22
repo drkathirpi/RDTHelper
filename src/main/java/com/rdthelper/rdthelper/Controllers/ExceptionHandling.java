@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rdthelper.rdthelper.Exception.LinkMissingRequest;
+import com.rdthelper.rdthelper.Exception.NoUserFoundExcpetion;
 import com.rdthelper.rdthelper.Exception.UserAlreadyCreatedException;
 import com.rdthelper.rdthelper.Models.ApiError;
 import org.springframework.http.HttpStatus;
@@ -60,6 +61,11 @@ public class ExceptionHandling {
     @ExceptionHandler(UserAlreadyCreatedException.class)
     public ResponseEntity<?> userAlreadyCreatedException(){
         return new ResponseEntity<>(new ApiError(131, "Only 1 user can be created"), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(NoUserFoundExcpetion.class)
+    public ResponseEntity<?> noUserFoundException(){
+        return new ResponseEntity<>(new ApiError(132, "No user found. You must start by creating a user"), HttpStatus.BAD_REQUEST);
     }
 
 

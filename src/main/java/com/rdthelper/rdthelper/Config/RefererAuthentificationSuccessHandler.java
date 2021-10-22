@@ -6,7 +6,9 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 public class RefererAuthentificationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
     public RefererAuthentificationSuccessHandler() {
+
         super();
+        System.out.println("success login");
         setUseReferer(true);
     }
 

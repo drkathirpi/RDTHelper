@@ -1,6 +1,7 @@
 package com.rdthelper.rdthelper.Controllers;
 
 import com.rdthelper.rdthelper.Api.TorrentsApi;
+import com.rdthelper.rdthelper.Exception.NoUserFoundExcpetion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -20,7 +21,7 @@ public class TorrentsController {
     }
 
     @GetMapping("/torrents/info/{id}")
-    public String torrentInfo(Model model, @PathVariable("id") String id){
+    public String torrentInfo(Model model, @PathVariable("id") String id) throws NoUserFoundExcpetion {
         model.addAttribute("torrent", torrentsApi.getOne(id).getBody());
         return "info";
     }

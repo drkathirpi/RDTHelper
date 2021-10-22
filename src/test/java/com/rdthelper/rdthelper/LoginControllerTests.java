@@ -27,7 +27,7 @@ class LoginControllerTests {
 
     @Test
     public void login() throws Exception {
-        mockMvc.perform(get("/login")).andExpect(redirectedUrl("/signup"));
+        mockMvc.perform(get("/web/login")).andExpect(redirectedUrl("/web/signup"));
     }
 
     @Test
@@ -39,7 +39,7 @@ class LoginControllerTests {
         user.setShowAll(false);
         User nUser = userService.save(user);
         assertThat(nUser).isNotNull();
-        mockMvc.perform(get("/login"))
+        mockMvc.perform(get("/web/login"))
                 .andExpect(status().isOk());
     }
 
