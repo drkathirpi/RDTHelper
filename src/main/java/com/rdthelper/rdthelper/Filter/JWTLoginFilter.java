@@ -4,8 +4,10 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.util.JsonParserDelegate;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.rdthelper.rdthelper.Config.RefererAuthenticationSuccessHandler;
 import com.rdthelper.rdthelper.Exception.NoValidCredential;
 import com.rdthelper.rdthelper.Models.Authorization;
+import com.rdthelper.rdthelper.Models.User;
 import com.rdthelper.rdthelper.Service.TokenAuthService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -32,63 +34,48 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
     }
 
     @Override
+    protected void successfulAuthentication(
+            HttpServletRequest req,
+            HttpServletResponse res, FilterChain chain,
+            Authentication auth) throws IOException, ServletException {
+        RefererAuthenticationSuccessHandler refererAuthenticationSuccessHandler = new RefererAuthenticationSuccessHandler();
+        refererAuthenticationSuccessHandler.onAuthenticationSuccess(req, res, auth);
+    }
+
+    @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
         System.out.println("attemptAuthentication");
-        String username;
-        String password;
+        User user = new User();
         String body = request.getReader().lines().collect(Collectors.joining());
 
         //Web
         if (request.getParameter("username") != null){
-            username = request.getParameter("username");
-            password = request.getParameter("password");
+            user = new User(request.getParameter("username"),
+                    request.getParameter("password"),
+                    null,
+                    false);
         }else if (!body.isEmpty()){
             //Api
             ObjectMapper objectMapper = new ObjectMapper();
             try{
                 Map<String, Object> map = objectMapper.readValue(body, Map.class);
-                username = map.get("username").toString();
-                password = map.get("password").toString();
-            }catch (JsonParseException e){
+                user = new User(map.get("username").toString(),
+                        map.get("password").toString());
+            }catch (JsonParseException | NullPointerException e){
                 String[] credentials = body.split("&");
-                username = credentials[0].split("=")[1];
-                password = credentials[1].split("=")[1];
+                if (credentials.length > 2){
+                    user = new User(credentials[0].split("=")[1],
+                            credentials[1].split("=")[1]);
 
+                }
             }
-
-        }else {
-            username = null;
-            password = null;
         }
 
-        System.out.printf("JWTLoginFilter.attemptAuthentication: username/password= %s,%s", username, password);
+        System.out.printf("JWTLoginFilter.attemptAuthentication: username/password= %s,%s", user.getUsername(), user.getPassword());
         System.out.println();
 
-        return getAuthenticationManager().authenticate(new UsernamePasswordAuthenticationToken(username, password, Collections.emptyList()));
+        return getAuthenticationManager().authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword(), Collections.emptyList()));
     }
 
-    @Override
-    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
-                                            Authentication authResult) throws IOException, ServletException {
 
-        System.out.println("successfulAuthentication");
-        String authorizationString = TokenAuthService.generateToken(authResult.getName());
-
-        response.setContentType("application/json");
-
-        //Ecriture du body
-        response.getWriter().write(new Authorization(authorizationString).toString());
-
-        //Création du cookie
-        Cookie cookie = new Cookie("Authorization", authorizationString);
-        cookie.setPath("/web");
-
-        response.addCookie(cookie);
-        response.setStatus(200);
-
-        response.sendRedirect("/web/home");
-
-
-        System.out.println("Authorization=" + authorizationString);
-    }
 }

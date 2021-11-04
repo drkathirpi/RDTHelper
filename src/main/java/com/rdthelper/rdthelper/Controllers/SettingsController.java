@@ -33,5 +33,4 @@ public class SettingsController {
         userRepository.save(user);
         return "settings";
     }
-
 }

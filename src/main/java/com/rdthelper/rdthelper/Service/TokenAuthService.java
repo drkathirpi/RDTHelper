@@ -1,5 +1,7 @@
 package com.rdthelper.rdthelper.Service;
 
+import com.rdthelper.rdthelper.Exception.TokenExpiredException;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -30,16 +32,19 @@ public class TokenAuthService {
                 .signWith(SignatureAlgorithm.HS512, SECRET).compact();
     }
 
-    private static Authentication parseToken(String token){
+    private static Authentication parseToken(String token) throws ExpiredJwtException{
         if (token.contains(PREFIX)){
             token = token.replace(PREFIX, "");
         }
+
+
         String user = Jwts.parser().setSigningKey(SECRET).parseClaimsJws(token).getBody()
                 .getSubject();
         return user != null ? new UsernamePasswordAuthenticationToken(user, null, Collections.emptyList()) : null;
+
     }
 
-    public static Authentication getAuthentication(HttpServletRequest request) {
+    public static Authentication getAuthentication(HttpServletRequest request) throws ExpiredJwtException {
 
         String tokenHeader = request.getHeader(HEADER);
         Cookie[] cookies = request.getCookies();

@@ -16,6 +16,8 @@ public class CustomWebMvcConfigurer implements WebMvcConfigurer {
     }
 
 
+
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(handlerInterceptor()).addPathPatterns("/*").excludePathPatterns("/js");

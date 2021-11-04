@@ -3,12 +3,12 @@ package com.rdthelper.rdthelper.Config;
 import com.rdthelper.rdthelper.Filter.JWTAuthFilter;
 import com.rdthelper.rdthelper.Filter.JWTLoginFilter;
 import com.rdthelper.rdthelper.Service.CustomUserDetailService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -26,7 +26,6 @@ import org.springframework.security.web.authentication.ExceptionMappingAuthentic
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 
-import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -58,8 +57,8 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationSuccessHandler successHandler(){
-        return new RefererAuthentificationSuccessHandler();
+    public AuthenticationSuccessHandler successHandler(@Value(value = "/") String defaultSuccessURL){
+        return new RefererAuthenticationSuccessHandler(defaultSuccessURL);
     }
 
     @Bean
@@ -98,18 +97,16 @@ public class SecurityConfig {
                     .cors()
                     .disable()
                     .antMatcher("/api/**").authorizeRequests()
-                    .antMatchers(HttpMethod.POST, "/api/login").permitAll()
+                    .antMatchers(HttpMethod.POST, "/api/v1/login").permitAll()
                     .antMatchers(HttpMethod.POST, "/api/v1/signup").permitAll()
-                    .antMatchers("/web/perform_login").permitAll()
-                    .antMatchers("**.js").permitAll()
                     .anyRequest().authenticated()
                     .and()
                     .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                     .and()
                     .exceptionHandling().accessDeniedHandler(accessDeniedHandler())
-                    .authenticationEntryPoint(authenticationEntryPoint())
+                    //.authenticationEntryPoint(authenticationEntryPoint())
                     .and()
-                    .addFilterBefore(new JWTLoginFilter("/api/login", authenticationManager()), UsernamePasswordAuthenticationFilter.class)
+                    .addFilterBefore(new JWTLoginFilter("/api/v1/login", authenticationManager()), UsernamePasswordAuthenticationFilter.class)
                     .addFilterBefore(new JWTAuthFilter(), UsernamePasswordAuthenticationFilter.class);
         }
     }
@@ -121,7 +118,6 @@ public class SecurityConfig {
         protected void configure(AuthenticationManagerBuilder auth) throws Exception {
             auth.authenticationProvider(authenticationProvider());
         }
-
 
         @Override
         protected void configure(HttpSecurity http) throws Exception {
@@ -138,14 +134,13 @@ public class SecurityConfig {
                     .and()
                     .formLogin()
                     .loginPage("/web/login")
-                    .loginProcessingUrl("/web/perform_login?web=true")
-                    //.defaultSuccessUrl("/web/home", true)
-                    .successHandler(successHandler())
+                    .loginProcessingUrl("/web/perform_login")
+                    .successHandler(successHandler("/web/home"))
                     .and()
                     .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                     .and()
                     .addFilterBefore(new JWTAuthFilter(), UsernamePasswordAuthenticationFilter.class)
-                    .addFilterBefore(new JWTLoginFilter("/web/perform_login", authenticationManager()), UsernamePasswordAuthenticationFilter.class)
+                    //.addFilterBefore(new JWTLoginFilter("/web/perform_login", authenticationManager()), UsernamePasswordAuthenticationFilter.class)
                     .logout()
                     .logoutSuccessHandler(logoutSuccessHandler())
                     .deleteCookies("Authorization")
@@ -153,12 +148,19 @@ public class SecurityConfig {
         }
     }
 
+    @Configuration
+    @Order(3)
+    public class DefaultConfig extends WebSecurityConfigurerAdapter{
 
-
-
-
-
-
-
-
+        @Override
+        protected void configure(HttpSecurity http) throws Exception {
+            http.csrf().disable().cors().disable()
+                    .authorizeRequests()
+                    .antMatchers("/js/*.js").permitAll()
+                    .antMatchers("/img/*.png").permitAll()
+                    .anyRequest().authenticated()
+                    .and()
+                    .exceptionHandling().accessDeniedHandler(accessDeniedHandler());
+        }
+    }
 }

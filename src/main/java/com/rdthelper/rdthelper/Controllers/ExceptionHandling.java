@@ -5,8 +5,11 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rdthelper.rdthelper.Exception.LinkMissingRequest;
 import com.rdthelper.rdthelper.Exception.NoUserFoundExcpetion;
+import com.rdthelper.rdthelper.Exception.TokenExpiredException;
 import com.rdthelper.rdthelper.Exception.UserAlreadyCreatedException;
 import com.rdthelper.rdthelper.Models.ApiError;
+import io.jsonwebtoken.*;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -14,9 +17,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.NoHandlerFoundException;
+import org.thymeleaf.exceptions.TemplateInputException;
 
 import javax.naming.ServiceUnavailableException;
 import javax.net.ssl.SSLException;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import java.net.ConnectException;
 
@@ -66,6 +72,17 @@ public class ExceptionHandling {
     @ExceptionHandler(NoUserFoundExcpetion.class)
     public ResponseEntity<?> noUserFoundException(){
         return new ResponseEntity<>(new ApiError(132, "No user found. You must start by creating a user"), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ExpiredJwtException.class)
+    public ResponseEntity<?> expiredJwtException(HttpServletRequest req, ExpiredJwtException ex){
+        return new ResponseEntity<>(new ApiError(133, "Token expired"), HttpStatus.FORBIDDEN);
+    }
+
+    @ResponseStatus(value = HttpStatus.NOT_FOUND)
+    @ExceptionHandler(NoHandlerFoundException.class)
+    public ResponseEntity<?> notFound(HttpServletRequest request){
+        return new ResponseEntity<>(new ApiError(134, "not found"), HttpStatus.NOT_FOUND);
     }
 
 

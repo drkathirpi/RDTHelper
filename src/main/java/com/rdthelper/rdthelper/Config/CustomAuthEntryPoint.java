@@ -17,8 +17,25 @@ import java.io.IOException;
 public class CustomAuthEntryPoint implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
+
+
+
         response.setStatus(HttpStatus.FORBIDDEN.value());
         response.addHeader(HttpHeaders.CONTENT_TYPE, "application/json");
-        response.getWriter().write(new ObjectMapper().writer().withDefaultPrettyPrinter().writeValueAsString(new ApiError(403,"Unauthorized", "Not Valid token found")));
+
+        String tokenStatus = new String();
+        if (request.getAttribute("tokenStatus") != null){
+            tokenStatus = (String) request.getAttribute("tokenStatus");
+
+        }
+
+        if (tokenStatus.equals("expired")){
+            response.getWriter().write(new ObjectMapper().writer().withDefaultPrettyPrinter().writeValueAsString(new ApiError(403,"Token expired")));
+        }else if (tokenStatus.equals("signature")){
+            response.getWriter().write(new ObjectMapper().writer().withDefaultPrettyPrinter().writeValueAsString(new ApiError(403,"Token malformed")));
+        } else {
+            response.getWriter().write(new ObjectMapper().writer().withDefaultPrettyPrinter().writeValueAsString(new ApiError(403,"Unauthorized", "Not Valid token found")));
+        }
+
     }
 }
