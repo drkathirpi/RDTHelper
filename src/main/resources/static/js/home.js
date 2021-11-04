@@ -1,28 +1,30 @@
 let abord = false;
 
 function debridLink(link){
-    var settings = {
+    let settings = {
         "url": "/api/v1/torrents/debrid",
         "method": "POST",
         "timeout": 0,
         "headers": {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " +  Cookies.get('Authorization')
         },
         "data": JSON.stringify({
             "link": link
         }),
     };
-
+    let linkCheckbox = $("#show_only_link");
+    let linkList = $("#link-list");
     $.ajax(settings).done(function (response) {
-        if (!$("#show_only_link").is(":checked")){
-            $("#link-list").append(
+        if (!linkCheckbox.is(":checked")){
+            linkList.append(
                 generateDownloadCard(response.filename, response.filesize, response.download)
             )
         }else{
-            $("#link-list").append(`${response.download}\n`);
+            linkList.append(`${response.download}\n`);
         }
     }).fail((jqXHR, other, other2) => {
-        generateErrorCard()
+        linkList.append(generateErrorCard(jqXHR.responseText));
     });
 }
 
@@ -40,7 +42,7 @@ function generateErrorCard(link){
 
 
 function generateDownloadCard(filename, fileSize, link){
-    return `<li class="list-group-item bg-dark text-white">
+    return `<li style="background-color: #a01414" class="list-group-item bg-dark text-white">
                     <div class="card">
                       <div class="card-body">
                         <blockquote class="blockquote mb-0">
@@ -85,6 +87,10 @@ async function debridClick(event){
     generateContainer();
     abord = false;
     let area = $("#links");
+
+    if (area.val() === "" || area.val() === "\n"){
+        return;
+    }
     let links = area.val().split("\n");
     for (let i = 0; i < links.length; i++) {
         if (abord){

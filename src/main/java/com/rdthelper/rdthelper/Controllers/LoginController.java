@@ -10,16 +10,15 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+@RequestMapping("/web")
 @Controller
 public class LoginController {
 
@@ -36,7 +35,7 @@ public class LoginController {
 
     @GetMapping("/signup")
     public String signup(Model model){
-        if (hasUser()) return "redirect:/login";
+        if (hasUser()) return "redirect:/web/login";
 
         User user = new User();
         model.addAttribute("user", user);
@@ -46,25 +45,31 @@ public class LoginController {
     @PostMapping("/perform_signup")
     public String performSignup(@ModelAttribute User user, Model model){
         userService.save(user);
-        return "redirect:/login";
+        return "redirect:/web/login";
     }
 
     @GetMapping("/login")
     public String Login(){
         if (!hasUser()) {
             Logger.getLogger(LoginController.class.getName()).log(Level.INFO, "No user found redirect to signup");
-            return "redirect:/signup";
+            return "redirect:/web/signup";
         }
         return "login";
     }
 
     @GetMapping("/logout")
     public String logout(HttpServletRequest request, HttpServletResponse response){
+        System.out.println("logout");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        Cookie cookie = new Cookie("Authorization", "");
+        cookie.setMaxAge(0);
+
+        response.addCookie(cookie);
         if (auth != null){
             new SecurityContextLogoutHandler().logout(request, response, auth);
         }
-        return "redirect:/login?logout";
+        return "redirect:/web/login?logout";
     }
 
 }

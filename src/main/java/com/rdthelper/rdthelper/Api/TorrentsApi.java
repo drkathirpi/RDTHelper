@@ -3,6 +3,7 @@ package com.rdthelper.rdthelper.Api;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rdthelper.rdthelper.Exception.LinkMissingRequest;
+import com.rdthelper.rdthelper.Exception.NoUserFoundExcpetion;
 import com.rdthelper.rdthelper.Models.ApiError;
 import com.rdthelper.rdthelper.Models.LinkRequest;
 import com.rdthelper.rdthelper.Models.RDTUpload;
@@ -28,32 +29,32 @@ public class TorrentsApi {
     TorrentsService torrentsService;
 
     @GetMapping("/torrents")
-    public ResponseEntity<?> getAll(){
+    public ResponseEntity<?> getAll() throws NoUserFoundExcpetion {
         return torrentsService.getAll();
     }
 
     @GetMapping("/torrents/{id}")
-    public ResponseEntity<?> getOne(@PathVariable(value = "id") String id){
+    public ResponseEntity<?> getOne(@PathVariable(value = "id") String id) throws NoUserFoundExcpetion {
         return torrentsService.getOne(id);
     }
 
     @DeleteMapping("/torrents/{id}")
-    public ResponseEntity<?> deleteOne(@PathVariable(value = "id") String id){
+    public ResponseEntity<?> deleteOne(@PathVariable(value = "id") String id) throws NoUserFoundExcpetion {
         return torrentsService.deleteOne(id);
     }
 
     @GetMapping("/torrents/accept/{id}")
-    public ResponseEntity<?> startTorrent(@PathVariable(value = "id") String id){
+    public ResponseEntity<?> startTorrent(@PathVariable(value = "id") String id) throws NoUserFoundExcpetion {
         return torrentsService.startTorrent(id);
     }
 
     @PostMapping("/torrent/upload")
-    public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile... files) throws IOException {
+    public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile... files) throws IOException, NoUserFoundExcpetion {
         return torrentsService.addTorrent(files);
     }
 
     @PostMapping("/torrents/debrid")
-    public ResponseEntity<?> debridLink(@RequestBody LinkRequest link) throws LinkMissingRequest {
+    public ResponseEntity<?> debridLink(@RequestBody LinkRequest link) throws LinkMissingRequest, NoUserFoundExcpetion {
         return torrentsService.debridLink(link);
     }
 }

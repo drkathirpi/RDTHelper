@@ -2,6 +2,7 @@ package com.rdthelper.rdthelper.Controllers;
 
 
 import com.rdthelper.rdthelper.Exception.LinkMissingRequest;
+import com.rdthelper.rdthelper.Exception.NoUserFoundExcpetion;
 import com.rdthelper.rdthelper.Models.DebridArray;
 import com.rdthelper.rdthelper.Models.LinkRequest;
 import com.rdthelper.rdthelper.Models.Torrents;
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
+@RequestMapping("/web")
 @Controller
 public class HomeController {
 
@@ -22,14 +24,16 @@ public class HomeController {
     private TorrentsService torrentsService;
 
 
-    @GetMapping("/")
+    @GetMapping("/home")
     public String home(){
+
+        System.out.println("login");
         return "home";
     }
 
 
-    @PostMapping("/")
-    public String postHome(@RequestParam("ids") String[] links, Model model) throws LinkMissingRequest {
+    @PostMapping("/home")
+    public String postHome(@RequestParam("ids") String[] links, Model model) throws LinkMissingRequest, NoUserFoundExcpetion {
         StringBuilder nonDebridLinks = new StringBuilder();
         for (String link : links){
             Torrents torrent = (Torrents) torrentsService.getOne(link).getBody();

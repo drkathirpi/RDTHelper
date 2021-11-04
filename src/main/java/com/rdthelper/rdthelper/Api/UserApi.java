@@ -1,13 +1,17 @@
 package com.rdthelper.rdthelper.Api;
 
 
+import com.rdthelper.rdthelper.Exception.UserAlreadyCreatedException;
 import com.rdthelper.rdthelper.Models.User;
 import com.rdthelper.rdthelper.Service.IUserService;
+import com.rdthelper.rdthelper.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
+import javax.xml.ws.Response;
 import java.util.List;
 
 @RestController
@@ -15,7 +19,7 @@ import java.util.List;
 public class UserApi {
 
     @Autowired
-    private IUserService userService;
+    private UserService userService;
 
     @GetMapping("/users")
     public List<User> getAllUsers(){
@@ -25,5 +29,18 @@ public class UserApi {
     @PostMapping("/users")
     public ResponseEntity<?> save(@RequestBody User user){
         return new ResponseEntity<>(userService.save(user), HttpStatus.OK);
+    }
+
+    @PostMapping("/signup")
+    public ResponseEntity<?> signup(@RequestBody User user) throws UserAlreadyCreatedException {
+        if (!userService.findAll().isEmpty()){
+            throw new UserAlreadyCreatedException("Only one user can be created");
+        }
+        return new ResponseEntity<>(userService.save(user), HttpStatus.OK);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody User user) throws UsernameNotFoundException {
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 }
