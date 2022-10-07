@@ -86,10 +86,12 @@
         <div class="login-form">
             <h1 style="color: white;">RDT Helper</h1>
             <h3 style="color: white;">Login</h3>
-            <form class="bg-dark" th:action="@{/web/perform_login}" method="POST">
-                <div th:if="${param.logout}">
+            <form class="bg-dark" action="/web/perform_login" method="POST">
+                {{ if .logout }}
+                <div>
                     You have been logged out.
                 </div>
+                {{ end }}
                 <div class="mb-2">
                     <label for="username" style="color: white;" class="form-label" >Username</label>
                     <input type="text" id="username" name="username" class="form-control" aria-describedby="emailHelp" required>
@@ -98,9 +100,11 @@
                     <label for="password" style="color: white;" class="form-label">Password</label>
                     <input type="password" class="form-control" name="password" id="password" required>
                 </div>
-                <div th:if="${param.error}">
+                {{ if .err }}
+                <div>
                     Invalid username and password.
                 </div>
+                {{ end }}
                 <button type="submit" class="btn btn-primary">Submit</button>
             </form>
 

@@ -1,6 +1,8 @@
 package api
 
 import (
+	"fmt"
+
 	"github.com/TOomaAh/RDTHelper/model"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
@@ -29,12 +31,46 @@ func PerformSignup(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
 	var user model.User
 	user.Username = c.PostForm("username")
-	user.Password = c.PostForm("password")
+	//encrypt password
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(c.PostForm("password")), bcrypt.DefaultCost)
+	if err != nil {
+		panic(err)
+	}
+	user.Password = string(hashedPassword)
 	user.RdtToken = c.PostForm("rdt_token")
 	user.Create(db)
-	c.JSON(200, gin.H{
-		"message": "User created",
-	})
+	c.Redirect(302, "/web/home")
+}
+
+func PerformLogin(c *gin.Context) {
+	db := c.MustGet("db").(*gorm.DB)
+	var user model.User
+	user.Username = c.PostForm("username")
+	user.Password = c.PostForm("password")
+
+	user = *user.FindOneByLogin(db)
+	if user.ID == 0 {
+		fmt.Println("user not found")
+		c.Redirect(302, "/login")
+		return
+	}
+	err := VerifyPassword(c.PostForm("password"), user.Password)
+
+	if err != nil {
+		fmt.Println(err)
+		c.Redirect(302, "/login")
+		return
+	}
+	token, err := model.GenerateToken(user.ID)
+
+	if err != nil {
+		fmt.Println(err)
+		c.Redirect(302, "/login")
+		return
+	}
+	c.SetCookie("token", token, 3600, "/", "localhost", false, true)
+	fmt.Println("token: ", token)
+	c.Redirect(302, "/web/home")
 }
 
 func createUser(c *gin.Context) {

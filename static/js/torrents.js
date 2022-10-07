@@ -105,14 +105,14 @@ function updateInterface(){
                 var seeders = torrent.seeders || 0;
                 var speed = bytesHumanReadable(torrent.speed) || 0;
                 console.log(torrent.status);
-                    let imgUri = encodeURI(`/img/${torrent.status}.png`);
+                    let imgUri = encodeURI(`/static/img/${torrent.status}.png`);
                     $("#tableTorrent").append(`<tr>
                                         <td scope="row" id="filename_${torrent.id}"><p class="filenameTorrent">${torrent.filename}</p></td>
                                         <td><img src=""/><img width="24px" height="24px" id="status_${torrent.id}" src="${imgUri}" alt="${torrent.status}"/><span  id="progress_${torrent.id}">${progress}%</span></td>
-                                        <td id="seeders_${torrent.id}" th:text="">${seeders}</td>
-                                        <td id="speed_${torrent.id}" th:text="">${speed}</td>
+                                        <td id="seeders_${torrent.id}">${seeders}</td>
+                                        <td id="speed_${torrent.id}">${speed}</td>
                                         <td>
-                                        <label for="download"><input class="torrentCheckbox" type="checkbox" value="${torrent.id}" name="ids"/></label>
+                                        <label for="download"><input class="torrentCheckbox" type="checkbox" value="${torrent.id}" name="id"/></label>
                                         </td>
                                     </tr>`);
             }
@@ -124,7 +124,7 @@ function updateInterface(){
                 let seeders = $(`#seeders_${torrent.id}`);
                 let status = $(`#status_${torrent.id}`);
 
-                status.attr("src", `/img/${torrent.status}.png`);
+                status.attr("src", `/static/img/${torrent.status}.png`);
                 progress.text(`${torrent.progress}%`);
                 speed.text(bytesHumanReadable(torrent.speed) || 0);
                 seeders.text(torrent.seeders || 0);
@@ -132,8 +132,6 @@ function updateInterface(){
 
         }
     });
-
-    
 }
 
 

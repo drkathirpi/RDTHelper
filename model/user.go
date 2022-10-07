@@ -20,6 +20,15 @@ func New(username string, password string, showAll bool, rdtToken string) *User 
 	}
 }
 
+func GetToken(db *gorm.DB) string {
+	user := &User{}
+	db.First(user)
+	if user != nil {
+		return user.RdtToken
+	}
+	return ""
+}
+
 func CountUsers(db *gorm.DB) int64 {
 	var count int64
 	db.Model(&User{}).Count(&count)
@@ -52,7 +61,7 @@ func (u *User) FindOne(db *gorm.DB) *User {
 }
 
 func (u *User) FindOneByLogin(db *gorm.DB) *User {
-	db.Where("username = ? AND password = ?", u.Username, u.Password).First(u)
+	db.Where("username = ?", u.Username).First(u)
 	if db.Error != nil {
 		return nil
 	}

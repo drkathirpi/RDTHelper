@@ -1,30 +1,30 @@
 package api
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/TOomaAh/RDTHelper/realdebrid"
+	"github.com/gin-gonic/gin"
+)
 
 func RegisterTorrent(group *gin.RouterGroup) {
-	group.GET("/torrents", getAll)
+	group.GET("/torrents", realdebrid.GetAll)
 	group.GET("/torrents/:id", getOne)
-	group.DELETE("/torrents/:id", deleteOne)
-	group.GET("/torrents/accept/:id", acceptOne)
-	group.POST("/torrent/upload", upload)
-	group.POST("/torrents/debrid", debrid)
-}
-
-func getAll(c *gin.Context) {
+	group.DELETE("/torrents/:id", realdebrid.DeleteOne)
+	group.GET("/torrents/accept/:id", realdebrid.AcceptOne)
+	group.POST("/torrent/upload", realdebrid.Upload)
+	group.POST("/torrents/debrid", Debrid)
 }
 
 func getOne(c *gin.Context) {
+	torrent := realdebrid.GetOne(c)
+
+	if torrent != nil {
+		c.JSON(200, torrent)
+	} else {
+		c.JSON(404, gin.H{"error": "Torrent not found"})
+	}
 }
 
-func deleteOne(c *gin.Context) {
-}
-
-func acceptOne(c *gin.Context) {
-}
-
-func upload(c *gin.Context) {
-}
-
-func debrid(c *gin.Context) {
+func Debrid(c *gin.Context) {
+	//Debrid torrent
+	c.JSON(200, realdebrid.Debrid(c))
 }
