@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <!-- jQuery Modal -->
+    <script th:src="@{https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.js}"></script>
+    <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css}"/>
+    <title th:text="Torrent"></title>
+</head>
+<body class="bg-dark">
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">RDTHelper</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav">
+                <a class="nav-link" aria-current="page" href="/web/home">Home</a>
+                <a class="nav-link" href="/web/torrents">Torrents</a>
+                <a class="nav-link active" href="/web/settings">Settings</a>
+            </div>
+            <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/web/logout">Logout</a>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+
+    </div>
+</nav>
+
+
+<form class="bg-dark container" th:object="${user}" action="#" th:action="/web/perform_settings" method="POST">
+    <div class="row justify-content-center">
+        <div class="col-6">
+            <label for="username" style="color: white;" class="form-label" >Username</label>
+            <input type="text" id="username" class="form-control" value="{{ .username }}" name="username" aria-describedby="emailHelp" required>
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-6">
+            <label for="password" style="color: white;" class="form-label">Password</label>
+            <input type="password" value="{{ .password }}" class="form-control" id="password" required>
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-6">
+            <label class="form-label" style="color: white;" for="token">Real-Debrid Token (TODO url real derid token)</label>
+            <input type="text" name="rdt_token"  value="{{ .rdtToken }}" class="form-control" id="token" required>
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-6">
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+    </div>
+
+
+</form>
+</body>
+</html>
