@@ -70,7 +70,7 @@ function deleteTorrents(){
     let allCheckBox = $(".torrentCheckbox:checkbox:checked");
     for (let i = 0; i < allCheckBox.length; i++){
         let settings = {
-            "url": `/api/v1/torrents/${$(allCheckBox[i]).attr('name')}`,
+            "url": `/api/v1/torrents/${$(allCheckBox[i]).attr('value')}`,
             "method": "DELETE",
             "timeout": 0,
         };
@@ -112,7 +112,7 @@ function updateInterface(){
                                         <td id="seeders_${torrent.id}">${seeders}</td>
                                         <td id="speed_${torrent.id}">${speed}</td>
                                         <td>
-                                        <label for="download"><input class="torrentCheckbox" type="checkbox" value="${torrent.id}" name="${torrent.id}"/></label>
+                                        <label for="download"><input class="torrentCheckbox" type="checkbox" value="${torrent.id}" name="id"/></label>
                                         </td>
                                     </tr>`);
             }

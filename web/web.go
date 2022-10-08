@@ -1,6 +1,7 @@
 package web
 
 import (
+	"log"
 	"strings"
 
 	"github.com/TOomaAh/RDTHelper/model"
@@ -28,8 +29,8 @@ func RegisterWeb(group *gin.RouterGroup) {
 	group.POST("/home", func(c *gin.Context) {
 		//get all id from query
 		var links []string
-
 		ids := c.PostFormArray("id")
+		log.Println(ids)
 		for _, id := range ids {
 			torrent := realdebrid.GetOneWithID(c, id)
 			links = append(links, torrent.Links[0])
