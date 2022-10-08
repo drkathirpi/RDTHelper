@@ -56,6 +56,8 @@ func main() {
 	group := r.Group("/api/v1")
 	web := r.Group("/web")
 	login := r.Group("/")
+	signup := r.Group("/")
+	login.Use(CheckUserExist)
 	web.Use(CheckUserExist)
 	web.Use(CheckCookie)
 	api.RegisterUser(group)
@@ -106,7 +108,7 @@ func main() {
 	web.POST("/perform_signup", api.PerformSignup)
 	web.POST("/perform_login", api.PerformLogin)
 
-	login.GET("/signup", func(ctx *gin.Context) {
+	signup.GET("/signup", func(ctx *gin.Context) {
 		ctx.HTML(200, "signup.html", gin.H{})
 	})
 
