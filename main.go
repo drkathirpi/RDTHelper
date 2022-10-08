@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/TOomaAh/RDTHelper/api"
 	"github.com/TOomaAh/RDTHelper/database"
 	"github.com/TOomaAh/RDTHelper/model"
@@ -14,8 +12,7 @@ import (
 //Cehck if one user exist middleware
 func CheckUserExist(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
-	fmt.Printf("%d", model.CountUsers(db))
-	if model.CountUsers(db) == 0 {
+	if model.CountUsers(db) == 0 && c.Request.URL.Path != "/signup" {
 		c.Redirect(302, "/signup")
 		return
 	}
