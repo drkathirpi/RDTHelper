@@ -51,14 +51,12 @@ func initHeader(c *gin.Context) map[string]string {
 }
 
 //return JSON response from API
-func GetAll(c *gin.Context) {
-	//Get All torrent from real debrid
-	var torrents []model.Torrent
-
+func GetAll(c *gin.Context) (*[]model.Torrent, error) {
+	var torrents *[]model.Torrent
 	header := initHeader(c)
 
 	if header == nil {
-		return
+		return nil, fmt.Errorf("cannot parse header")
 	}
 
 	options := fast.Option{
@@ -68,12 +66,10 @@ func GetAll(c *gin.Context) {
 	}
 
 	if err := fast.Fetch(APIURL+"/torrents", options).ToJSON(&torrents); err != nil {
-		log.Println(err)
-		c.JSON(500, gin.H{"error": err.Error()})
-		return
+		return nil, err
 	}
 
-	c.JSON(200, torrents)
+	return torrents, nil
 }
 
 func GetOne(c *gin.Context) *model.Torrent {
@@ -157,22 +153,23 @@ func AcceptOne(c *gin.Context) {
 	c.JSON(200, gin.H{"message": "Torrent accepted"})
 }
 
-func Upload(c *gin.Context) {
+func Upload(c *gin.Context) *[]model.RdtUpload {
 	//Upload torrent to real debrid
 	header := initHeader(c)
 
 	if header == nil {
-		return
+		return nil
 	}
 
 	from, err := c.MultipartForm()
 
 	if err != nil {
-		c.JSON(500, gin.H{"error": err.Error()})
-		return
+		return nil
 	}
 
 	files := from.File["file"]
+
+	var rdtUpload []model.RdtUpload
 
 	for _, file := range files {
 
@@ -180,8 +177,7 @@ func Upload(c *gin.Context) {
 		method := "PUT"
 		content, err := file.Open()
 		if err != nil {
-			c.JSON(500, gin.H{"error": err.Error()})
-			return
+			return nil
 		}
 		defer content.Close()
 		bytes, _ := ioutil.ReadAll(content)
@@ -191,36 +187,34 @@ func Upload(c *gin.Context) {
 		req, err := http.NewRequest(method, url, payload)
 
 		if err != nil {
-			fmt.Println(err)
-			return
+			return nil
 		}
+
 		req.Header.Add("Authorization", header["Authorization"])
 		req.Header.Add("Content-Type", "application/x-bittorrent")
 
 		res, err := client.Do(req)
 		if err != nil {
 			fmt.Println(err)
-			return
+			return nil
 		}
 		defer res.Body.Close()
 
 		body, err := ioutil.ReadAll(res.Body)
 		if err != nil {
 			fmt.Println(err)
-			return
+			return nil
 		}
-
-		var rdtUpload model.RdtUpload
-		log.Println(string(body))
+		var uploadedFile model.RdtUpload
 		//parse json body
-		if err := json.Unmarshal(body, &rdtUpload); err != nil {
-			log.Println(err)
-			return
+		if err := json.Unmarshal(body, &uploadedFile); err != nil {
+			return nil
 		}
-		log.Println(rdtUpload)
-		c.JSON(200, rdtUpload)
+		rdtUpload = append(rdtUpload, uploadedFile)
 
 	}
+
+	return &rdtUpload
 }
 
 func Debrid(c *gin.Context) *model.Link {
