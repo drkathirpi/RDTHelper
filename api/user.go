@@ -42,35 +42,27 @@ func PerformSignup(c *gin.Context) {
 	c.Redirect(302, "/web/home")
 }
 
-func PerformLogin(c *gin.Context) {
-	db := c.MustGet("db").(*gorm.DB)
+func PerformLogin(username string, password string, db *gorm.DB) (string, error) {
 	var user model.User
-	user.Username = c.PostForm("username")
-	user.Password = c.PostForm("password")
+	user.Username = username
 
 	user = *user.FindOneByLogin(db)
 	if user.ID == 0 {
 		fmt.Println("user not found")
-		c.Redirect(302, "/login")
-		return
+		return "", fmt.Errorf("user not found")
 	}
-	err := VerifyPassword(c.PostForm("password"), user.Password)
+	err := VerifyPassword(password, user.Password)
 
 	if err != nil {
-		fmt.Println(err)
-		c.Redirect(302, "/login")
-		return
+		return "", err
 	}
 	token, err := model.GenerateToken(user.ID)
 
 	if err != nil {
-		fmt.Println(err)
-		c.Redirect(302, "/login")
-		return
+		return "", err
 	}
 
-	c.SetCookie("token", token, 3600, "/", c.Request.Host, false, true)
-	c.Redirect(302, "/web/home")
+	return token, nil
 }
 
 func createUser(c *gin.Context) {

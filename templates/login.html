@@ -86,10 +86,10 @@
         <div class="login-form">
             <h1 style="color: white;">RDT Helper</h1>
             <h3 style="color: white;">Login</h3>
-            <form class="bg-dark" action="/web/perform_login" method="POST">
+            <form class="bg-dark" action="/perform_login" method="POST">
                 {{ if .logout }}
                 <div>
-                    You have been logged out.
+                    <p style="color: white">You have been logged out.</p>
                 </div>
                 {{ end }}
                 <div class="mb-2">
@@ -102,7 +102,7 @@
                 </div>
                 {{ if .err }}
                 <div>
-                    Invalid username and password.
+                    <p style="color: white">Invalid username and password.</p>
                 </div>
                 {{ end }}
                 <button type="submit" class="btn btn-primary">Submit</button>
