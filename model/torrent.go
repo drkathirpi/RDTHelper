@@ -13,6 +13,6 @@ type Torrent struct {
 	//Files    []*RdtFile `json:"files"`
 	Links []string `json:"links"`
 	//Ended   int64    `json:"ended"`
-	//Speed   int64    `json:"speed"`
-	//Seeders int64    `json:"seeders"`
+	Speed   int64 `json:"speed"`
+	Seeders int64 `json:"seeders"`
 }
