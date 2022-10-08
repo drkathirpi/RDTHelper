@@ -190,18 +190,22 @@ function uploadFile(){
 
     $.ajax(settings).done(function (response) {
         let json = JSON.parse(response);
+        console.log(json.id);
+        console.log("test");
+        let settingsInfo = {
+            url: `/api/v1/torrents/${json.id}`,
+            method: "GET",
+            timeout: 0,
+        }
+        console.log("make request")
+        makeRequest(settingsInfo, (r) => {
+            console.log(r);
+            acceptAllFile(r.id);
+            $("#addingText").remove();
+        });
         for (let i = 0; i < json.length; i++){
 
-            let settingsInfo = {
-                url: `/api/v1/torrents/${json[i]['id']}`,
-                method: "GET",
-                timeout: 0,
-            }
-
-            makeRequest(settingsInfo, (r) => {
-                acceptAllFile(r.id);
-                $("#addingText").remove();
-            });
+            
         }
     });
 }

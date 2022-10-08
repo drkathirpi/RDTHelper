@@ -1,6 +1,7 @@
 package realdebrid
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -141,8 +142,8 @@ func AcceptOne(c *gin.Context) {
 	}
 
 	options := fast.Option{
-		Method:      http.MethodGet,
-		ContentType: fast.ContentTypeJSON,
+		Method:      http.MethodPost,
+		ContentType: "application/x-www-form-urlencoded",
 		Headers:     header,
 		Body:        body,
 	}
@@ -175,9 +176,8 @@ func Upload(c *gin.Context) {
 
 	for _, file := range files {
 
-		url := "https://api.real-debrid.com/rest/1.0/torrents/addTorrent"
+		url := APIURL + "/torrents/addTorrent"
 		method := "PUT"
-		//get content file
 		content, err := file.Open()
 		if err != nil {
 			c.JSON(500, gin.H{"error": err.Error()})
@@ -194,7 +194,7 @@ func Upload(c *gin.Context) {
 			fmt.Println(err)
 			return
 		}
-		req.Header.Add("Authorization", "Bearer 7LQ4JRO6URYYWDYTBNYN2YHSOWHAOEJHK7PMCE4BV252H5NZ5XFQ")
+		req.Header.Add("Authorization", header["Authorization"])
 		req.Header.Add("Content-Type", "application/x-bittorrent")
 
 		res, err := client.Do(req)
@@ -204,15 +204,23 @@ func Upload(c *gin.Context) {
 		}
 		defer res.Body.Close()
 
-		_, err = ioutil.ReadAll(res.Body)
+		body, err := ioutil.ReadAll(res.Body)
 		if err != nil {
 			fmt.Println(err)
 			return
 		}
 
-	}
+		var rdtUpload model.RdtUpload
+		log.Println(string(body))
+		//parse json body
+		if err := json.Unmarshal(body, &rdtUpload); err != nil {
+			log.Println(err)
+			return
+		}
+		log.Println(rdtUpload)
+		c.JSON(200, rdtUpload)
 
-	c.JSON(200, gin.H{"message": "Torrent uploaded"})
+	}
 }
 
 func Debrid(c *gin.Context) *model.Link {
