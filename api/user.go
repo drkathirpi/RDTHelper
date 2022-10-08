@@ -68,8 +68,8 @@ func PerformLogin(c *gin.Context) {
 		c.Redirect(302, "/login")
 		return
 	}
-	c.SetCookie("token", token, 3600, "/", "localhost", false, true)
-	fmt.Println("token: ", token)
+
+	c.SetCookie("token", token, 3600, "/", c.Request.Host, false, true)
 	c.Redirect(302, "/web/home")
 }
 

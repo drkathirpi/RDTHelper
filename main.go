@@ -99,7 +99,7 @@ func main() {
 	})
 
 	web.GET("/logout", func(c *gin.Context) {
-		c.SetCookie("token", "", -1, "/", "localhost", false, true)
+		c.SetCookie("token", "", -1, "/", c.Request.Host, false, true)
 		c.Redirect(302, "/login")
 	})
 
