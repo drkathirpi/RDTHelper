@@ -136,13 +136,18 @@ func AcceptOne(c *gin.Context) {
 		return
 	}
 
+	body := map[string]string{
+		"files": "all",
+	}
+
 	options := fast.Option{
 		Method:      http.MethodGet,
 		ContentType: fast.ContentTypeJSON,
 		Headers:     header,
+		Body:        body,
 	}
 
-	if _, err := fast.Fetch(APIURL+"/torrents/accept/"+c.Param("id"), options).ToString(); err != nil {
+	if _, err := fast.Fetch(APIURL+"/torrents/selectFiles/"+c.Param("id"), options).ToString(); err != nil {
 		log.Println(err)
 		c.JSON(500, gin.H{"error": err.Error()})
 		return
