@@ -8,6 +8,27 @@
     <script th:src="@{https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.js}"></script>
     <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css}"/>
     <title th:text="Torrent"></title>
+    <style>
+        body {
+            font-family: "Lato", sans-serif;
+        }
+
+        .navbar {
+            padding: 1rem;
+        }
+
+        .form-label {
+            color: white;
+        }
+
+        .form-control {
+            margin-bottom: 1rem;
+        }
+
+        .btn-primary {
+            margin-top: 1rem;
+        }
+    </style>
 </head>
 <body class="bg-dark">
 
@@ -30,39 +51,29 @@
                     </li>
                 </ul>
             </div>
-
         </div>
-
     </div>
 </nav>
 
-
-<form class="bg-dark container" th:object="${user}" action="#" th:action="/web/perform_settings" method="POST">
-    <div class="row justify-content-center">
-        <div class="col-6">
-            <label for="username" style="color: white;" class="form-label" >Username</label>
+<div class="container">
+    <form class="bg-dark" th:object="${user}" action="#" th:action="/web/perform_settings" method="POST">
+        <div class="mb-3">
+            <label for="username" class="form-label">Username</label>
             <input type="text" id="username" class="form-control" value="{{ .username }}" name="username" aria-describedby="emailHelp" required>
         </div>
-    </div>
-    <div class="row justify-content-center">
-        <div class="col-6">
-            <label for="password" style="color: white;" class="form-label">Password</label>
+        <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
             <input type="password" name="password" class="form-control" id="password" required>
         </div>
-    </div>
-    <div class="row justify-content-center">
-        <div class="col-6">
-            <label class="form-label" style="color: white;" for="token">Real-Debrid Token (TODO url real derid token)</label>
+        <div class="mb-3">
+            <label class="form-label" for="token">Real-Debrid Token (TODO url real derid token)</label>
             <input type="text" name="rdt_token"  value="{{ .rdtToken }}" class="form-control" id="token" required>
         </div>
-    </div>
-    <div class="row justify-content-center">
-        <div class="col-6">
+        <div class="mb-3">
             <button type="submit" class="btn btn-primary">Submit</button>
         </div>
-    </div>
+    </form>
+</div>
 
-
-</form>
 </body>
 </html>
