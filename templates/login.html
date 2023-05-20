@@ -7,12 +7,9 @@
             font-family: "Lato", sans-serif;
         }
 
-
-
         .main-head{
             height: 150px;
             background: #FFF;
-
         }
 
         .sidenav {
@@ -22,22 +19,35 @@
             padding-top: 20px;
         }
 
-
         .main {
             padding: 0px 10px;
+        }
+
+        .login-form{
+            margin-top: 10%;
+        }
+
+        .register-form{
+            margin-top: 10%;
         }
 
         @media screen and (max-height: 450px) {
             .sidenav {padding-top: 15px;}
         }
 
-        @media screen and (max-width: 450px) {
+        @media screen and (max-width: 768px) {
+            .sidenav{
+                width: 100%;
+                position: static;
+                height: auto;
+            }
+
             .login-form{
-                margin-top: 10%;
+                margin-top: 5%;
             }
 
             .register-form{
-                margin-top: 10%;
+                margin-top: 5%;
             }
         }
 
@@ -55,14 +65,13 @@
             }
 
             .login-form{
-                margin-top: 80%;
+                margin-top: 20%;
             }
 
             .register-form{
                 margin-top: 20%;
             }
         }
-
 
         .login-main-text{
             margin-top: 20%;
@@ -107,7 +116,6 @@
                 {{ end }}
                 <button type="submit" class="btn btn-primary">Submit</button>
             </form>
-
         </div>
     </div>
 </div>
